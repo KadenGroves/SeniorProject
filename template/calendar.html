@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Calendar Integration</title>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><a href="survey.html">Survey</a></li>
+            <li><a href="prayerwall.html">Prayer Wall</a></li>
+            <li><a href="chat.html">Chat</a></li>
+            <li><a href="organization_finder.html">Organization Finder</a></li>
+        </ul>
+    </nav>
+    <div id="calendar"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var calendarEl = document.getElementById("calendar");
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: "dayGridMonth",
+                googleCalendarApiKey: "AIzaSyDLlyQtoyLFHEgdBgAWeW7Uix6BTZ9Cvio",
+                events: {
+                    googleCalendarId: "74c7ee51c9e00b03d6bec917828f9eed2f5ba30210443cf10eb24e1cc0f4a67c@group.calendar.google.com"
+                }
+            });
+
+            calendar.render();
+
+            document.getElementById("refresh").addEventListener("click", function () {
+                calendar.refetchEvents();
+            });
+        });
+    </script>
+    <button id="refresh">Refresh Calendar</button>
+</body>
+</html>
