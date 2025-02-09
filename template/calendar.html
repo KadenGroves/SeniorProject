@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -20,17 +22,45 @@
             <li><a href="organization_finder.html">Organization Finder</a></li>
         </ul>
     </nav>
+
     <div id="calendar"></div>
+    
+    <form id="eventForm">
+        <label>Event Title:</label>
+        <input type="text" id="eventTitle" required><br>
+
+        <label>Start Date & Time:</label>
+        <input type="datetime-local" id="startTime" required><br>
+
+        <label>End Date & Time:</label>
+        <input type="datetime-local" id="endTime" required><br>
+
+        <label>Description:</label>
+        <textarea id="eventDescription"></textarea><br>
+
+        <button type="submit">Add Event</button>
+    </form>
+
+    <button id="refresh">Refresh Calendar</button>
 
     <script>
+        let tokenClient;
+        let gapiLoaded = false;
+        let gisLoaded = false;
+
+        const GOOGLE_CALENDAR_API_KEY = "AIzaSyDLlyQtoyLFHEgdBgAWeW7Uix6BTZ9Cvio";
+        const GOOGLE_CALENDAR_ID = "74c7ee51c9e00b03d6bec917828f9eed2f5ba30210443cf10eb24e1cc0f4a67c@group.calendar.google.com";
+        const CLIENT_ID = "860752192863-pkq55p7cg8c0gbi5ekmoefe3a61vdjtg.apps.googleusercontent.com";
+
+        // Load FullCalendar with Google Calendar Events
         document.addEventListener("DOMContentLoaded", function () {
             var calendarEl = document.getElementById("calendar");
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: "dayGridMonth",
-                googleCalendarApiKey: "AIzaSyDLlyQtoyLFHEgdBgAWeW7Uix6BTZ9Cvio",
+                googleCalendarApiKey: GOOGLE_CALENDAR_API_KEY,
                 events: {
-                    googleCalendarId: "74c7ee51c9e00b03d6bec917828f9eed2f5ba30210443cf10eb24e1cc0f4a67c@group.calendar.google.com"
+                    googleCalendarId: GOOGLE_CALENDAR_ID
                 }
             });
 
@@ -40,7 +70,83 @@
                 calendar.refetchEvents();
             });
         });
+
+        // Load Google API Client
+        function gapiLoad() {
+            gapi.load("client", initClient);
+        }
+
+        function initClient() {
+            gapi.client.init({
+                apiKey: GOOGLE_CALENDAR_API_KEY,
+                clientId: CLIENT_ID,
+                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
+                scope: "https://www.googleapis.com/auth/calendar.events"
+            }).then(() => {
+                console.log("Google Calendar API initialized.");
+                gapiLoaded = true;
+            }).catch(error => {
+                console.error("Error initializing Google API: ", error);
+            });
+        }
+
+        // Load Google Identity Services (OAuth 2.0)
+        function gisLoad() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: "https://www.googleapis.com/auth/calendar.events",
+                callback: (tokenResponse) => {
+                    gapi.client.setToken(tokenResponse);
+                }
+            });
+            gisLoaded = true;
+        }
+
+        // Event Submission Handler
+        document.getElementById("eventForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            if (!gapiLoaded || !gisLoaded) {
+                alert("Google API not loaded yet. Try again.");
+                return;
+            }
+
+            var eventTitle = document.getElementById("eventTitle").value;
+            var startTime = document.getElementById("startTime").value;
+            var endTime = document.getElementById("endTime").value;
+            var eventDescription = document.getElementById("eventDescription").value;
+
+            var event = {
+                summary: eventTitle,
+                description: eventDescription,
+                start: { dateTime: new Date(startTime).toISOString() },
+                end: { dateTime: new Date(endTime).toISOString() }
+            };
+
+            tokenClient.requestAccessToken({
+                prompt: "", // No user prompt if already authorized
+                callback: (tokenResponse) => {
+                    gapi.client.setToken(tokenResponse);
+                    gapi.client.calendar.events.insert({
+                        calendarId: "primary",  // Change this if using a shared calendar
+                        resource: event
+                    }).then(response => {
+                        alert("Event created!");
+                        document.getElementById("eventForm").reset();
+                    }).catch(error => {
+                        console.error("Error creating event: ", error);
+                    });
+                }
+            });
+        });
+
+        // Load API when window loads
+        function loadApis() {
+            gapiLoad();
+            gisLoad();
+        }
+
+        window.onload = loadApis;
     </script>
-    <button id="refresh">Refresh Calendar</button>
 </body>
 </html>
