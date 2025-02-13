@@ -14,3 +14,33 @@ app.get('/', (req,res) => {
     res.render('index.ejs')
 })
 
+app.get('/calendar', (req,res) => {
+    res.render('calendar.ejs')
+})
+
+app.get('/chat', (req,res) => {
+    res.render('chat.ejs')
+})
+
+app.get('/login', (req,res) => {
+    res.render('login.ejs')
+})
+
+app.get('/orgFinder', (req,res) => {
+    res.render('orgFinder.ejs')
+})
+
+app.get('/prayerWall', (req,res) => {
+    res.render('prayerWall.ejs')
+})
+
+app.get('/profile', (req,res) => {
+    res.render('profile.ejs')
+})
+
+app.get('/survey', (req,res) => {
+    res.render('survey.ejs')
+})
+
+
+
