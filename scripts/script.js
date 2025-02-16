@@ -1,4 +1,5 @@
 const express = require('express')
+const login = require('./login')
 const app = express()
 app.set('view-engine', 'ejs')
 // var reload = require('reload')
@@ -46,5 +47,9 @@ app.get('/survey', (req,res) => {
     res.render('survey.ejs')
 })
 
-
+app.post('/register', async (req,res) => {
+    const { username, email, password, role} = req.body;
+    login.register(username, email, password, role);
+    console.log('script')
+})
 

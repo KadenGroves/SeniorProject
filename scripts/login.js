@@ -36,6 +36,25 @@ app.get("/", (req, res) => {
   res.render("index"); // Render the EJS file for login/register
 });
 
+async function register(username, email, password, role) {
+  if (!username || !email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  console.log('login')
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const sql = "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)";
+    
+    db.query(sql, [username, email, hashedPassword, role || "user"], (err, result) => {
+      if (err) return res.status(500).json({ error: "Error registering user", details: err });
+      res.redirect("/"); // Redirect back to login page
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error hashing password" });
+  }
+}
+
 // ----------------- REGISTER ROUTE -----------------
 app.post("/register", async (req, res) => {
   const { username, email, password, role } = req.body;
