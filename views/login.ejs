@@ -3,48 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <title>Login & Register</title>
-    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <title>User Authentication</title>
 </head>
 <body>
-    <div class="container">
-        <!-- Login Form -->
-        <div id="login-container">
-            <h2>Login</h2>
-            <form id="login-form">
-                <label for="login-username">Username</label>
-                <input type="text" id="login-username" name="username" required>
+    <h2>Register</h2>
+    <form action="/register" method="POST">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Register</button>
+    </form>
 
-                <label for="login-password">Password</label>
-                <input type="password" id="login-password" name="password" required>
-
-                <button type="submit">Login</button>
-            </form>
-            <p id="login-error-message"></p>
-            <p>Don't have an account? <a href="#" id="show-register">Register here</a></p>
-        </div>
-
-        <!-- Register Form (Hidden by Default) -->
-        <div id="register-container" style="display: none;">
-            <h2>Register</h2>
-            <form id="register-form">
-                <label for="register-username">Username</label>
-                <input type="text" id="register-username" name="username" required>
-
-                <label for="register-password">Password</label>
-                <input type="password" id="register-password" name="password" required>
-
-                <button type="submit">Register</button>
-            </form>
-            <p id="register-message"></p>
-            <p>Already have an account? <a href="#" id="show-login">Login here</a></p>
-        </div>
-    </div>
-
-    <script src="scripts/script.js"></script>
+    <h2>Login</h2>
+    <form action="/login" method="POST">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
 </body>
 </html>

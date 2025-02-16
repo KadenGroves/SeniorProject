@@ -3,162 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Calendar Integration</title>
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="https://apis.google.com/js/api.js"></script>
-    <!-- Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <title>Events</title>
     <link rel="stylesheet" href="/stylesheets/styles.css">
 </head>
 <body>
     <nav>
-        <div id="currentUser">
-            <img src="/placeHolders/Owen Icon.png" alt="User Img">
-            <p>User Name</p>
-        </div>
-        <div id="navButtons">
-            <input type="text" placeholder="Search">
-            <a class="button" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
-            <a class="button" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg"> Profile</a>
-            <a class="button" href="/survey"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey</a>
-            <a class="button" href="/prayerwall"><img class="icon" src="/Icons/svgs/solid/thumbtack.svg"> Prayer Wall</a>
-            <a class="button" href="/chat"><img class="icon" src="/Icons/svgs/solid/comment.svg"> Chat</a>
-            <a class="button" href="/calendar"><img class="icon" src="/Icons/svgs/solid/calendar.svg"> Calendar</a>
-        </div>
-        <div id="orgImage">
-            <img src="https://www.iconpacks.net/free-icon/user-3296.html" alt="org Img">
-        </div>
+        <!-- Navigation Bar (Same as you have) -->
     </nav>
-
-    <div id="calendar"></div>
-    
+    <h1>Upcoming Events</h1>
     <form id="eventForm">
-        <label>Event Title:</label>
-        <input type="text" id="eventTitle" required><br>
-
-        <label>Start Date & Time:</label>
-        <input type="datetime-local" id="startTime" required><br>
-
-        <label>End Date & Time:</label>
-        <input type="datetime-local" id="endTime" required><br>
-
-        <label>Description:</label>
-        <textarea id="eventDescription"></textarea><br>
-
+        <input type="text" id="title" placeholder="Event Title" required>
+        <textarea id="description" placeholder="Event Description" required></textarea>
+        <input type="datetime-local" id="event_date" required>
         <button type="submit">Add Event</button>
     </form>
-
-    <button id="refresh">Refresh Calendar</button>
-
+    <div id="eventsList"></div>
     <script>
-        let tokenClient;
-        let gapiLoaded = false;
-        let gisLoaded = false;
-
-        const GOOGLE_CALENDAR_API_KEY = "AIzaSyDLlyQtoyLFHEgdBgAWeW7Uix6BTZ9Cvio";
-        const GOOGLE_CALENDAR_ID = "74c7ee51c9e00b03d6bec917828f9eed2f5ba30210443cf10eb24e1cc0f4a67c@group.calendar.google.com";
-        const CLIENT_ID = "860752192863-pkq55p7cg8c0gbi5ekmoefe3a61vdjtg.apps.googleusercontent.com";
-
-        // Load FullCalendar with Google Calendar Events
-        document.addEventListener("DOMContentLoaded", function () {
-            var calendarEl = document.getElementById("calendar");
-
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: "dayGridMonth",
-                googleCalendarApiKey: GOOGLE_CALENDAR_API_KEY,
-                events: {
-                    googleCalendarId: GOOGLE_CALENDAR_ID
-                }
-            });
-
-            calendar.render();
-
-            document.getElementById("refresh").addEventListener("click", function () {
-                calendar.refetchEvents();
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchEvents();
         });
 
-        // Load Google API Client
-        function gapiLoad() {
-            gapi.load("client", initClient);
-        }
-
-        function initClient() {
-            gapi.client.init({
-                apiKey: GOOGLE_CALENDAR_API_KEY,
-                clientId: CLIENT_ID,
-                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-                scope: "https://www.googleapis.com/auth/calendar.events"
-            }).then(() => {
-                console.log("Google Calendar API initialized.");
-                gapiLoaded = true;
-            }).catch(error => {
-                console.error("Error initializing Google API: ", error);
-            });
-        }
-
-        // Load Google Identity Services (OAuth 2.0)
-        function gisLoad() {
-            tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: "https://www.googleapis.com/auth/calendar.events",
-                callback: (tokenResponse) => {
-                    gapi.client.setToken(tokenResponse);
-                }
-            });
-            gisLoaded = true;
-        }
-
-        // Event Submission Handler
-        document.getElementById("eventForm").addEventListener("submit", function (e) {
+        document.getElementById('eventForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const event_date = document.getElementById('event_date').value;
+            const created_by = 1; // Replace with logged-in user ID
 
-            if (!gapiLoaded || !gisLoaded) {
-                alert("Google API not loaded yet. Try again.");
-                return;
-            }
-
-            var eventTitle = document.getElementById("eventTitle").value;
-            var startTime = document.getElementById("startTime").value;
-            var endTime = document.getElementById("endTime").value;
-            var eventDescription = document.getElementById("eventDescription").value;
-
-            var event = {
-                summary: eventTitle,
-                description: eventDescription,
-                start: { dateTime: new Date(startTime).toISOString() },
-                end: { dateTime: new Date(endTime).toISOString() }
-            };
-
-            tokenClient.requestAccessToken({
-                prompt: "", // No user prompt if already authorized
-                callback: (tokenResponse) => {
-                    gapi.client.setToken(tokenResponse);
-                    gapi.client.calendar.events.insert({
-                        calendarId: "primary",  // Change this if using a shared calendar
-                        resource: event
-                    }).then(response => {
-                        alert("Event created!");
-                        document.getElementById("eventForm").reset();
-                    }).catch(error => {
-                        console.error("Error creating event: ", error);
-                    });
-                }
+            const response = await fetch('/api/events', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, description, event_date, created_by })
             });
+            const data = await response.json();
+            alert(data.message);
+            fetchEvents();
         });
 
-        // Load API when window loads
-        function loadApis() {
-            gapiLoad();
-            gisLoad();
+        async function fetchEvents() {
+            const response = await fetch('/api/events');
+            const events = await response.json();
+            const eventsList = document.getElementById('eventsList');
+            eventsList.innerHTML = events.map(event => `
+                <div>
+                    <h3>${event.title}</h3>
+                    <p>${event.description}</p>
+                    <p><strong>Date:</strong> ${new Date(event.event_date).toLocaleString()}</p>
+                </div>
+            `).join('');
         }
-
-        window.onload = loadApis;
     </script>
 </body>
 </html>

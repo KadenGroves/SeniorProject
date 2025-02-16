@@ -1,3 +1,0 @@
-googlecalendarAPIkey: AIzaSyDLlyQtoyLFHEgdBgAWeW7Uix6BTZ9Cvio
-googlecalendarID: 74c7ee51c9e00b03d6bec917828f9eed2f5ba30210443cf10eb24e1cc0f4a67c@group.calendar.google.com
-client ID: 860752192863-pkq55p7cg8c0gbi5ekmoefe3a61vdjtg.apps.googleusercontent.com
