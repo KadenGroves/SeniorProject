@@ -46,5 +46,8 @@ app.get('/survey', (req,res) => {
     res.render('survey.ejs')
 })
 
-
-
+app.post('/register', (req,res) => {
+    const { username, email, password, role } = req.body
+    login.register(username, email, password, role)
+    console.log('script')
+})
