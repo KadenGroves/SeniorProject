@@ -4,6 +4,8 @@ body {
     padding: 0;
     text-align: center;
     font-size: 15px;
+    background-color: beige;
+    color: #3e3e3e;
 }
 .icon {
     height: 12px;
@@ -11,6 +13,8 @@ body {
 
 /* ------- Navigation Bar ------- */
 nav {
+    position: relative;
+    z-index: 5;
     height: 80px;
     position: static;
     top: 0;
@@ -18,13 +22,16 @@ nav {
     justify-content: space-between;
 
     font-weight: normal;
-    background-image: linear-gradient(to right, rgb(175, 235, 141)
-    , rgb(25, 199, 62));
+    /* background-color: #2d572c; */
+    background-image: linear-gradient(to right, rgb(101, 138, 80), rgb(16, 133, 88));
 }
 #currentUser, #orgImage {
-    background-color: rgb(55, 71, 61);
+    background-color: rgb(50, 50, 50);
     padding: 20px;
     width: auto;
+}
+#orgImage img{
+    height: 100%;
 }
 #navButtons {
     flex-grow: 1;
@@ -42,20 +49,23 @@ nav {
 }
 nav input {
     background-color: white;
-    border: 5px, solid, white;
+    border: 2px, solid, white;
     border-radius: 5px;
     flex-grow: 0.5;
 }
 .button {
     background-color: white;
-    border: 5px, solid, white;
+    border: 2px, solid, white;
     border-radius: 5px;
-    padding: 5px;
+    padding: 8px;
 }
 .button:hover {
-    opacity: 0.5;
-    border: 5px, solid, black;
+    border-color:rgb(50, 50, 50);
 }
+.button:active {
+    background-color: rgb(50, 50, 50);
+}
+
 
 nav a {
     color: black;
@@ -66,10 +76,10 @@ nav a {
 #currentUser img {
     width: 100px;
     /* clip-path: circle(); */
-    border: 10px, solid, rgb(55, 71, 61);
+    border: 10px, solid, rgb(50, 50, 50);
     border-radius: 50%;
 }
-#currentUser p {
+#currentUser h3 {
     width: 100px;
     font-weight: 900;
     font-size: 20px;
@@ -78,4 +88,11 @@ nav a {
     padding-top: 0;
     padding: 10px;
     /* text-align: center; */
+}
+
+/* Footer */
+footer {
+    height: 200px;
+    background-color: rgb(50, 50, 50);
+    color: rgb(182, 182, 182);
 }
