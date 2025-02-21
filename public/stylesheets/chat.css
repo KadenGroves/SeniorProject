@@ -1,0 +1,50 @@
+#main {
+    position: relative;
+    /* z-index: -1; */
+    height: 90vh;
+    display: flex;
+}
+
+#threadList {
+    padding-top: 8ch;
+    width: 300px;
+    background-color: rgb(211, 211, 190);
+}
+
+#divider {
+    width: 50px;
+    background-color: rgb(131, 131, 118);
+}
+
+.threadOption {
+    z-index: 5;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    height: 30px;
+
+    border: solid, 2px, white; 
+    border-radius: 10px;
+    text-align: left;
+    height: 45px;
+
+    margin: 10px;
+    padding: 10px;
+
+    font-size: 20px;
+}
+.threadOption img {
+    height: 30px;
+    border-radius: 100%;
+}
+.threadOption p{
+    margin-left: 10px;
+}
+.threadOption:hover {
+    opacity: 0.8;
+    border-color: rgb(101, 138, 80);
+}
+.threadOption:active {
+    background-color: rgb(101, 138, 80);
+}

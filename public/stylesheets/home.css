@@ -1,0 +1,33 @@
+#what, #who {
+    margin-left: 10%;
+    margin-right: 10%;
+    display: flex;
+    justify-content: space-evenly;
+    height: 500px;
+    width: 80%;
+    
+    border: solid, 10px, rgb(101, 138, 80);
+    border-top: 0px;
+    border-bottom: 0px;
+}
+
+image {
+    max-height: 500px;
+    /* min-height: 200px; */
+}
+
+h1 {
+    padding: 20px;
+    background-color: white;
+    margin-left: 20%;
+    margin-right: 20%;
+    border: solid, 5px, rgb(101, 138, 80);
+    border-radius: 20px;
+}
+h2 {
+    font-size: 40px;
+}
+p {
+    margin: 10%;
+    font-size: 20px;
+}

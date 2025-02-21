@@ -9,12 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     <title>Chat</title>
     <link rel="stylesheet" href="/stylesheets/styles.css">
+    <link rel="stylesheet" href="/stylesheets/chat.css">
 </head>
 <body>
     <nav>
         <div id="currentUser">
             <img src="/placeHolders/Owen Icon.png" alt="User Img">
-            <p>User Name</p>
+            <h3>User Name</h3>
         </div>
         <div id="navButtons">
             <input type="text" placeholder="Search">
@@ -29,7 +30,35 @@
             <img src="https://www.iconpacks.net/free-icon/user-3296.html" alt="org Img">
         </div>
     </nav>
-    <h1>Chat</h1>
-    <p>Welcome to the Chat page.</p>
+
+    <!-- <h1>Chat</h1>
+    <p>Welcome to the Chat page.</p> -->
+
+    <div id="main">
+        <div id="threadList">
+            <button class="threadOption">
+                <img src="/placeHolders/blank-profile-picture-973460_960_720.webp" alt="Thread image">
+                <p>Thread 1</p>
+            </button>
+
+            <button class="threadOption">
+                <img src="/placeHolders/blank-profile-picture-973460_960_720.webp" alt="Thread image">
+                <p>Thread 2</p>
+            </button>
+
+            <button class="threadOption">
+                <img src="/placeHolders/blank-profile-picture-973460_960_720.webp" alt="Thread image">
+                <p>Thread 3</p>
+            </button>
+        </div>
+
+        <div id="divider"></div>
+
+        <div id="threadDisplay">
+            
+        </div>
+    </div>
+
+    
 </body>
 </html>
