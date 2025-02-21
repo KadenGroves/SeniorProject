@@ -37,11 +37,7 @@ app.get("/", (req, res) => {
 });
 
 async function register(username, email, password, role) {
-  if (!username || !email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
-  console.log('login')
+  console.log('register')
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const sql = "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)";
@@ -102,6 +98,5 @@ app.get("/profile", (req, res) => {
   res.render("profile"); // Render the profile page
 });
 
-// Start Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+module.exports = {register}

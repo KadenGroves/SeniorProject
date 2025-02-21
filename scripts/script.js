@@ -1,5 +1,5 @@
 const express = require('express')
-const login = require('./login')
+const login = require('./login.js')
 const app = express()
 app.set('view-engine', 'ejs')
 // var reload = require('reload')
@@ -47,8 +47,14 @@ app.get('/survey', (req,res) => {
     res.render('survey.ejs')
 })
 
-app.post('/register', (req,res) => {
-    const { username, email, password, role } = req.body
+app.post('/register', async (req,res) => {
+    const { username, email, password, role } = req.body ?? {};
+    console.log(username)
+    console.log(email)
+    console.log(password)
+    console.log(role)
+    if (!username || !email || !password) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
     login.register(username, email, password, role)
-    console.log('script')
 })
