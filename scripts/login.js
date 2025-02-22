@@ -2,17 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const mysql = require('mysql2');
 const router = express.Router();
-
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "Password123",
-  database: "ministry_app",
-});
-db.connect((err) => {
-  if (err) console.error("DB connection failed: ", err);
-  else console.log("Connected to MySQL DB (authRoutes)");
-});
+const db = require('./db');
 
 router.get('/', (req, res) => {
   res.render('index'); 

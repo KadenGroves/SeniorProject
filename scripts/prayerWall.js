@@ -4,18 +4,7 @@ const mysql = require('mysql2');
 const path = require('path');
 const fs = require('fs');
 const router = express.Router();
-
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "Password123",
-  database: "ministry_app",
-});
-
-db.connect((err) => {
-  if (err) console.error("DB connection failed (prayerWall):", err);
-  else console.log("Connected to MySQL DB (prayerWall)");
-});
+const db = require('./db');
 
 
 const storage = multer.diskStorage({
