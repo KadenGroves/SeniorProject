@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <title>Prayer Wall</title>
-    <link rel="stylesheet" href="/stylesheets/styles.css">
-    <link rel="stylesheet" href="/stylesheets/prayerwall.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"
+    rel="stylesheet"
+  />
+  <title>Prayer Wall</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css" />
+  <link rel="stylesheet" href="/stylesheets/prayerwall.css" />
 </head>
 <body>
+  
     <nav>
         <div id="currentUser">
             <img src="/placeHolders/Owen Icon.png" alt="User Img">
@@ -31,55 +35,95 @@
         </div>
     </nav>
 
-    <main class="prayer-container">
-        <h1>Prayer Wall</h1>
-        <p>Welcome to the Prayer Wall page.</p>
+  <main class="prayer-container">
+    <h1>Prayer Wall</h1>
+    <p>Welcome to the Prayer Wall page.</p>
 
-    <!-- Prayer Request Form -->
-    <h2>Submit a Prayer Request</h2>
-    <form action="/PrayerWall" method="POST" enctype="multipart/form-data">
-        <div>
-            <label for="title">Title:</label>
-            <input type="text" id="title" name="title" required>
-        </div>
+    <!-- Toggle Prayer Request Form Button -->
+    <button
+      id="togglePrayerForm"
+      style="background-color: #2d572c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;"
+    >
+      Pin A Prayer
+    </button>
 
-        <div>
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="4" required></textarea>
-        </div>
+    <!-- Prayer Request Form (Hidden by Default) -->
+    <div id="prayerFormContainer" class="form-container" style="display: none;">
+        <h2>Submit a Prayer Request</h2>
+        <form action="/PrayerWall" method="POST" enctype="multipart/form-data" class="prayer-form">
+          <div class="form-group">
+            <label for="title" class="form-label">Title:</label>
+            <div class="input-box">
+              <input type="text" id="title" name="title" required class="form-input" />
+            </div>
+          </div>
+      
+          <div class="form-group">
+            <label for="description" class="form-label">Description:</label>
+            <div class="input-box">
+              <textarea id="description" name="description" rows="4" required class="form-input"></textarea>
+            </div>
+          </div>
+      
+          <div class="form-group">
+            <label for="image" class="form-label">Optional Image:</label>
+            <div class="input-box">
+              <input type="file" id="image" name="image" accept="image/*" class="form-input" />
+            </div>
+          </div>
+      
+          <button type="submit" class="btn submit-btn">
+            Submit Prayer Request
+          </button>
+        </form>
+      </div>
 
-        <div>
-            <label for="image">Optional Image:</label>
-            <input type="file" id="image" name="image" accept="image/*">
-        </div>
-
-        <button type="submit">Submit Prayer Request</button>
-    </form>
-
-    <hr>
+    <hr />
 
     <!-- Display Prayer Requests -->
     <h2>Prayer Requests</h2>
     <div>
-        <% if (prayers && prayers.length > 0) { %>
-            <% prayers.forEach(prayer => { %>
-                <div class="prayer-item">
-                    <h3><%= prayer.title %></h3>
-                    <p><%= prayer.description %></p>
-                    <p>
-                        <small>Posted by: <%= prayer.username %> on 
-                        <%= new Date(prayer.created_at).toLocaleString() %></small>
-                    </p>
-                    <% if (prayer.image_url) { %>
-                        <img src="<%= prayer.image_url %>" alt="Prayer Image" style="max-width: 300px;">
-                    <% } %>
-                    <hr>
-                </div>
-            <% }); %>
-        <% } else { %>
-            <p>No prayer requests have been posted yet. Be the first to share one!</p>
-        <% } %>
+      <% if (prayers && prayers.length > 0) { %>
+        <% prayers.forEach(prayer => { %>
+          <div class="prayer-item">
+            <h3><%= prayer.title %></h3>
+            <p><%= prayer.description %></p>
+            <p>
+              <small>
+                Posted by: <%= prayer.username %> on
+                <%= new Date(prayer.created_at).toLocaleString() %>
+              </small>
+            </p>
+            <% if (prayer.image_url) { %>
+              <img
+                src="<%= prayer.image_url %>"
+                alt="Prayer Image"
+                style="max-width: 300px;"
+              />
+            <% } %>
+            <hr />
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p>No prayer requests have been posted yet. Be the first to share one!</p>
+      <% } %>
     </div>
+  </main>
 
+  <script>
+    document.getElementById("togglePrayerForm").addEventListener("click", () => {
+      const formContainer = document.getElementById("prayerFormContainer");
+      const button = document.getElementById("togglePrayerForm");
+
+      // Toggle form visibility
+      if (formContainer.style.display === "none" || formContainer.style.display === "") {
+        formContainer.style.display = "block";
+        button.innerText = "Close Pin A Prayer";
+      } else {
+        formContainer.style.display = "none";
+        button.innerText = "Pin A Prayer";
+      }
+    });
+  </script>
 </body>
 </html>

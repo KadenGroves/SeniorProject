@@ -413,3 +413,57 @@ p {
       font-size: 1.5em;
   }
 }
+
+/* Container styling for the prayer form */
+.form-container {
+  background-color: #fff;           /* White background or adjust per your theme */
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styling */
+.prayer-form h2 {
+  color: #2d572c;                   /* Your theme's signature green */
+  font-family: 'Lato', sans-serif;
+  margin-bottom: 15px;
+}
+
+/* Form group spacing */
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Label styling */
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-family: 'Lato', sans-serif;
+}
+
+/* Input, textarea, and file input styling */
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-family: 'Lato', sans-serif;
+}
+
+/* Button styling */
+.btn {
+  background-color: #2d572c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #244d24;
+}
