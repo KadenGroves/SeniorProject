@@ -33,11 +33,19 @@ router.get('/PrayerWall', (req, res) => {
 
 router.post('/PrayerWall', upload.single("image"), (req, res) => {
   const { title, description } = req.body;
-  const authorId = 1;  // Replace with your session-based user ID once authentication is set up
+  const user = req.session.user;
+
+  if (!user) {
+    return res.status(401).json({ error: "You must be logged in to post a prayer request." });
+  }
+
+  const authorId = user.id;
   const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
   if (!title || !description) {
     return res.status(400).json({ error: "Title and description are required." });
   }
+
   const sql = "INSERT INTO prayer_wall (title, description, author_id, image_url) VALUES (?, ?, ?, ?)";
   db.query(sql, [title, description, authorId, imageUrl], (err) => {
     if (err) {
