@@ -3,7 +3,14 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const app = express(); 
+const session = require('express-session');
 
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'mySecretKey',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
 
 app.set('view engine', 'ejs');
 
@@ -21,6 +28,9 @@ const profileRoutes = require('./profile');
 app.use(loginRoutes);
 app.use(prayerWallRoutes);
 app.use(profileRoutes);
+
+
+
 
 app.get('/', (req, res) => {
   res.render('index.ejs');
