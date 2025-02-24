@@ -44,6 +44,8 @@ router.post('/login', (req, res) => {
     if (!isValidPassword)
       return res.status(401).json({ message: "Invalid email or password" });
     
+    req.session.user = { id: user.id, username: user.username, role: user.role };
+
     res.redirect('/profile');
   });
 });

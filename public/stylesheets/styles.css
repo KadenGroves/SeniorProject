@@ -167,3 +167,303 @@ footer {
     border-radius: 8px;
     background-color: #fff;
   }
+
+/* User Authentication Container Styling */
+.auth-container {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Card style for forms */
+.auth-container .card {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border: 1px solid #8b9a8f;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+/* Form styling inside auth container */
+.auth-container .login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Input fields */
+.auth-container input {
+  padding: 12px;
+  width: 100%;
+  border: 1px solid #8b9a8f;
+  border-radius: 8px;
+  font-size: 1em;
+  background-color: #f8f8f8;
+  font-family: 'Georgia', serif;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.auth-container input:focus {
+  border-color: #2d572c;
+  box-shadow: 0 0 5px rgba(45, 87, 44, 0.5);
+}
+
+/* Button styling */
+.auth-container button {
+  padding: 12px;
+  background-color: #2d572c; /* Scholar green */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Georgia', serif;
+  width: 100%;
+}
+
+.auth-container button:hover {
+  background-color: #245024;
+}
+
+.auth-container button:active {
+  background-color: #1a3b1a;
+}
+
+/* Heading style */
+.auth-container h2 {
+  color: #2d572c;
+  font-size: 1.8em;
+  margin-bottom: 10px;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .auth-container {
+      flex-direction: column;
+      padding: 10px;
+  }
+
+  .auth-container .card {
+      width: 90%;
+      padding: 20px;
+  }
+
+  .auth-container h1 {
+      font-size: 2em;
+  }
+}
+
+.prayer-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f4f1e6; /* Soft beige background */
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  font-family: 'Lato', sans-serif;
+  color: #3e3e3e;
+  text-align: center;
+}
+
+/* Heading Styles */
+h1 {
+  color: #2d572c;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+h2 {
+  color: #245024;
+  font-size: 2em;
+  margin: 20px 0;
+}
+
+p {
+  font-size: 1.1em;
+  margin: 10px 0;
+  color: #555;
+}
+
+/* Prayer Form */
+.prayer-form {
+  background-color: #ebe6d8; /* Light beige form background */
+  padding: 25px;
+  border-radius: 10px;
+  border: 1px solid #8b9a8f;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.prayer-form label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  color: #2d572c;
+}
+
+.prayer-form input,
+.prayer-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #8b9a8f;
+  border-radius: 8px;
+  font-size: 1em;
+  background-color: #f8f8f8;
+  font-family: 'Lato', sans-serif;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.prayer-form input:focus,
+.prayer-form textarea:focus {
+  border-color: #2d572c;
+  box-shadow: 0 0 5px rgba(45, 87, 44, 0.5);
+}
+
+.prayer-form button {
+  padding: 12px 20px;
+  background-color: #2d572c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background-color 0.3s;
+  width: 100%;
+  font-family: 'Lato', sans-serif;
+}
+
+.prayer-form button:hover {
+  background-color: #245024;
+}
+
+/* Prayer Requests Display */
+.prayer-list {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.prayer-item {
+  background-color: #eae3d5; /* Soft beige card background */
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #8b9a8f;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.prayer-item h3 {
+  color: #2d572c;
+  font-size: 1.8em;
+  margin-bottom: 10px;
+}
+
+.prayer-item p {
+  color: #3e3e3e;
+  margin: 5px 0;
+  line-height: 1.6;
+}
+
+.prayer-item small {
+  color: #6b6b6b;
+  font-style: italic;
+}
+
+.prayer-item img {
+  display: block;
+  margin: 10px auto;
+  max-width: 100%;
+  border-radius: 10px;
+  border: 1px solid #8b9a8f;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .prayer-container {
+      width: 95%;
+      padding: 10px;
+  }
+
+  h1 {
+      font-size: 2em;
+  }
+
+  .prayer-form input,
+  .prayer-form textarea,
+  .prayer-form button {
+      font-size: 0.9em;
+  }
+
+  .prayer-item h3 {
+      font-size: 1.5em;
+  }
+}
+
+/* Container styling for the prayer form */
+.form-container {
+  background-color: #fff;           /* White background or adjust per your theme */
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styling */
+.prayer-form h2 {
+  color: #2d572c;                   /* Your theme's signature green */
+  font-family: 'Lato', sans-serif;
+  margin-bottom: 15px;
+}
+
+/* Form group spacing */
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Label styling */
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-family: 'Lato', sans-serif;
+}
+
+/* Input, textarea, and file input styling */
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-family: 'Lato', sans-serif;
+}
+
+/* Button styling */
+.btn {
+  background-color: #2d572c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #244d24;
+}
