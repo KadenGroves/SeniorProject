@@ -279,10 +279,10 @@ const allowedVerses = [
   }
   
   // Profile Route
-  router.get('/profile', async (req, res) => {
+  router.get('/', async (req, res) => {
     try {
       const verse = await getRandomBibleVerse();
-      res.render('profile', { verse });
+      res.render('home', { verse });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch Bible verse." });
     }

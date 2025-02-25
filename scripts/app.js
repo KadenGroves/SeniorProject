@@ -23,17 +23,21 @@ app.use(express.json());
 
 const loginRoutes = require('./login');
 const prayerWallRoutes = require('./prayerWall');
-const profileRoutes = require('./profile');
+const homeRoutes = require('./home');
 
 app.use(loginRoutes);
 app.use(prayerWallRoutes);
-app.use(profileRoutes);
+app.use(homeRoutes);
 
 
 
 
 app.get('/', (req, res) => {
-  res.render('index.ejs');
+  res.render('home.ejs');
+});
+
+app.get('/profile', (req, res) => {
+  res.render('profile.ejs');
 });
 
 app.get('/calendar', (req, res) => {
@@ -56,12 +60,12 @@ app.get('/prayerWall', (req, res) => {
   res.render('prayerWall.ejs');
 });
 
-app.get('/profile', (req, res) => {
-  res.render('profile.ejs');
-});
-
 app.get('/survey', (req, res) => {
   res.render('survey.ejs');
+});
+
+app.get('/landing', (req, res) => {
+  res.render('landing.ejs');
 });
 
 

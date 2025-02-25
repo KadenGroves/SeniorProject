@@ -33,61 +33,6 @@
     <h1>Profile</h1>
     <p>Welcome to the Profile page.</p>
 
-        <!-- Bible Verse Container -->
-        <div class="verse-container">
-        <div class="verse-header">Verse For You</div>
-        <% if (verse && verse.text) { %>
-            <p class="verse-text">"<%= verse.text %>"</p>
-            <p class="verse-reference">— <%= verse.reference %></p>
-        <% } else { %>
-            <p class="verse-text">No verse available today. Please try again later.</p>
-        <% } %>
-        </div>
-
-        <!-- Verse Search Section -->
-        <div class="verse-container">
-            <div class="verse-header">Search for a Bible Verse</div>
-            <form id="verseSearchForm">
-                <input type="text" id="verseQuery" placeholder="Enter keyword or book (e.g., John 3:16)" required style="width: 100%; padding: 10px; margin: 10px 0;">
-                <button type="submit" style="background-color: #2d572c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Search</button>
-            </form>
-            <div id="verseResults" style="margin-top: 20px;"></div>
-        </div>
-
-        <script>
-            document.getElementById("verseSearchForm").addEventListener("submit", async function(event) {
-                event.preventDefault();
-                const query = document.getElementById("verseQuery").value.trim();
-                if (!query) return alert("Please enter a search term.");
-    
-                try {
-                    const response = await fetch(`/api/verse-search?query=${encodeURIComponent(query)}`);
-                    const data = await response.json();
-    
-                    const resultsContainer = document.getElementById("verseResults");
-                    resultsContainer.innerHTML = "";
-    
-                    if (data.error) {
-                        resultsContainer.innerHTML = `<p style="color: red;">${data.error}</p>`;
-                        return;
-                    }
-    
-                    if (data.verses && data.verses.length > 0) {
-                        data.verses.forEach(verse => {
-                            resultsContainer.innerHTML += `
-                                <div class="card" style="margin: 10px 0; padding: 10px; border: 1px solid #8b9a8f; border-radius: 8px; background-color: #fff;">
-                                    <p style="font-size: 1.2em; font-style: italic;">"${verse.text}"</p>
-                                    <p style="font-weight: bold; color: #2d572c;">— ${verse.reference}</p>
-                                </div>`;
-                        });
-                    } else {
-                        resultsContainer.innerHTML = "<p>No results found for your search.</p>";
-                    }
-                } catch (error) {
-                    console.error("Failed to fetch search results:", error);
-                    document.getElementById("verseResults").innerHTML = `<p style="color: red;">Failed to retrieve search results. Please try again later.</p>`;
-                }
-            });
-        </script>
+    <p>This page will have all the profile management stuff you nead!</p>
 </body>
 </html>

@@ -6,10 +6,6 @@ const mysql = require('mysql2');
 const router = express.Router();
 const db = require('./db');
 
-router.get('/', (req, res) => {
-  res.render('index'); 
-});
-
 router.post('/register', async (req, res) => {
   const { username, email, password, role } = req.body;
   if (!username || !email || !password) {
