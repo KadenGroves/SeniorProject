@@ -1,0 +1,10 @@
+form {
+    display: block;
+    background-color: white;
+    border: solid, 5px, rgb(101, 138, 80);
+    border-radius: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 10px;
+    padding-bottom: 30px;
+}

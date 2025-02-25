@@ -23,11 +23,11 @@ app.use(express.json());
 
 const loginRoutes = require('./login');
 const prayerWallRoutes = require('./prayerWall');
-const homeRoutes = require('./home');
+const bibleRoutes = require('./bible');
 
 app.use(loginRoutes);
 app.use(prayerWallRoutes);
-app.use(homeRoutes);
+app.use(bibleRoutes);
 
 
 

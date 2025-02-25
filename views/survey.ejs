@@ -10,6 +10,7 @@
     
     <title>Survey</title>
     <link rel="stylesheet" href="/stylesheets/styles.css">
+    <link rel="stylesheet" href="/stylesheets/survey.css">
 </head>
 <body>
     <nav>
@@ -30,8 +31,38 @@
             <img src="https://www.iconpacks.net/free-icon/user-3296.html" alt="org Img">
         </div>
     </nav>
-
+    
     <h1>Survey</h1>
     <p>Welcome to the Survey page.</p>
+
+    <form>
+        <h1>Survey Name</h1>
+
+        <div class="question">
+            <h3>Question 1</h3>
+            <input type="text">
+        </div>
+
+        <div class="question">
+            <h3>Question 2</h3>
+            <input type="radio" id="huey" name="drone" value="huey"/>
+            <label for="huey">Huey</label>
+            <input type="radio" id="loui" name="drone" value="loui"/>
+            <label for="huey">Loui</label>
+            <input type="radio" id="Fooey" name="drone" value="Fooey"/>
+            <label for="huey">Fooey</label>
+        </div>
+
+        <div class="question">
+            <h3>Question 3</h3>
+            <input id="q3.1" type="checkbox">
+            <label for="q3.1">1</label>
+            <input id="q3.2" type="checkbox">
+            <label for="q3.2">2</label>
+            <input id="q3.3" type="checkbox">
+            <label for="q3.3">3</label>
+        </div>
+    </form>
+
 </body>
 </html>
