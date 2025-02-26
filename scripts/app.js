@@ -24,50 +24,54 @@ app.use(express.json());
 const loginRoutes = require('./login');
 const prayerWallRoutes = require('./prayerWall');
 const bibleRoutes = require('./bible');
+const adminPanelRoutes = require('./adminPanel');
 
 app.use(loginRoutes);
 app.use(prayerWallRoutes);
 app.use(bibleRoutes);
-
+app.use(adminPanelRoutes);
 
 
 
 app.get('/', (req, res) => {
-  res.render('home.ejs');
+  res.render('home.ejs', {user: req.session.user || null});
 });
 
 app.get('/profile', (req, res) => {
-  res.render('profile.ejs');
+  res.render('profile.ejs', {user: req.session.user || null});
 });
 
 app.get('/calendar', (req, res) => {
-  res.render('calendar.ejs');
+  res.render('calendar.ejs', {user: req.session.user || null});
 });
 
 app.get('/chat', (req, res) => {
-  res.render('chat.ejs');
+  res.render('chat.ejs', {user: req.session.user || null});
 });
 
 app.get('/login', (req, res) => {
-  res.render('login.ejs');
+  res.render('login.ejs', {user: req.session.user || null});
 });
 
 app.get('/orgFinder', (req, res) => {
-  res.render('orgFinder.ejs');
+  res.render('orgFinder.ejs', {user: req.session.user || null});
 });
 
 app.get('/prayerWall', (req, res) => {
-  res.render('prayerWall.ejs');
+  res.render('prayerWall.ejs', {user: req.session.user || null});
 });
 
 app.get('/survey', (req, res) => {
-  res.render('survey.ejs');
+  res.render('survey.ejs', {user: req.session.user || null});
 });
 
 app.get('/landing', (req, res) => {
-  res.render('landing.ejs');
+  res.render('landing.ejs', {user: req.session.user || null});
 });
 
+app.get('/adminPanel', (req, res) => {
+  res.render('adminPanel.ejs', {user: req.session.user || null});
+});
 
 const PORT = process.env.PORT || 3000; 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
