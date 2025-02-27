@@ -26,6 +26,12 @@ const prayerWallRoutes = require('./prayerWall');
 const bibleRoutes = require('./bible');
 const adminPanelRoutes = require('./adminPanel');
 
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null; 
+  next();
+});
+
+
 app.use(loginRoutes);
 app.use(prayerWallRoutes);
 app.use(bibleRoutes);
