@@ -36,6 +36,7 @@
                 <th>Email</th>
                 <th>Role</th>
                 <th>Created At</th>
+                <th>actions</th>
             </tr>
         </thead>
         <tbody>
@@ -46,6 +47,47 @@
                     <td><%= user.email %></td>
                     <td><%= user.role %></td>
                     <td><%= user.created_at %></td>
+                    <td>
+                        <% if (currentUser.role === 'admin' || currentUser.role === 'staff') { %> 
+                            <% if (user.role === 'user') { %>  
+                                <!-- Staff and Admins: Can promote a user to student leader -->
+                                <form action="/adminPanel/promote/<%= user.id %>" method="POST" style="display:inline;">
+                                    <button type="submit">Promote to Student Leader</button>
+                                </form>
+                    
+                                <form action="/adminPanel/delete/<%= user.id %>" method="POST" style="display:inline;">
+                                    <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
+                    
+                            <% } else if (user.role === 'studentleader') { %>
+                                <!-- Admins: Can promote student leader to staff -->
+                                <% if (currentUser.role === 'admin') { %>
+                                    <form action="/adminPanel/promote/<%= user.id %>" method="POST" style="display:inline;">
+                                        <button type="submit">Promote to Staff</button>
+                                    </form>
+                                <% } %>
+                    
+                                <!-- Staff and Admins: Can demote a student leader back to user -->
+                                <form action="/adminPanel/demote/<%= user.id %>" method="POST" style="display:inline;">
+                                    <button type="submit">Demote to User</button>
+                                </form>
+                    
+                                <form action="/adminPanel/delete/<%= user.id %>" method="POST" style="display:inline;">
+                                    <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
+                    
+                            <% } else if (currentUser.role === 'admin' && user.role === 'staff') { %>
+                                <!-- Admins: Can demote staff but not other admins -->
+                                <form action="/adminPanel/demote/<%= user.id %>" method="POST" style="display:inline;">
+                                    <button type="submit">Demote to Student Leader</button>
+                                </form>
+                    
+                                <form action="/adminPanel/delete/<%= user.id %>" method="POST" style="display:inline;">
+                                    <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
+                            <% } %>
+                        <% } %>
+                    </td>
                 </tr>
             <% }) %>
         </tbody>
