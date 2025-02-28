@@ -26,6 +26,67 @@
             <img src="https://www.iconpacks.net/free-icon/user-3296.html" alt="org Img">
         </div>
     </nav>
+    <h2>Search User</h2>
+<form action="/adminPanel/search" method="GET">
+    <input type="text" name="username" placeholder="Enter username" required>
+    <button type="submit">Search</button>
+</form>
+
+<% if (searchUser) { %>
+    <h3>Search Result</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><%= searchUser.id %></td>
+                <td><%= searchUser.username %></td>
+                <td><%= searchUser.email %></td>
+                <td><%= searchUser.role %></td>
+                <td>
+                    <% if (currentUser.role === 'admin' || currentUser.role === 'staff') { %>
+                        <% if (searchUser.role === 'user') { %>
+                            <form action="/adminPanel/promote/<%= searchUser.id %>" method="POST" style="display:inline;">
+                                <button type="submit">Promote to Student Leader</button>
+                            </form>
+                            <form action="/adminPanel/delete/<%= searchUser.id %>" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        <% } else if (searchUser.role === 'studentleader') { %>
+                            <% if (currentUser.role === 'admin') { %>
+                                <form action="/adminPanel/promote/<%= searchUser.id %>" method="POST" style="display:inline;">
+                                    <button type="submit">Promote to Staff</button>
+                                </form>
+                            <% } %>
+                            <form action="/adminPanel/demote/<%= searchUser.id %>" method="POST" style="display:inline;">
+                                <button type="submit">Demote to User</button>
+                            </form>
+                            <form action="/adminPanel/delete/<%= searchUser.id %>" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        <% } else if (currentUser.role === 'admin' && searchUser.role === 'staff') { %>
+                            <form action="/adminPanel/demote/<%= searchUser.id %>" method="POST" style="display:inline;">
+                                <button type="submit">Demote to Student Leader</button>
+                            </form>
+                            <form action="/adminPanel/delete/<%= searchUser.id %>" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        <% } %>
+                    <% } %>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+<% } else if (searchPerformed) { %>
+    <p>No user found with that username.</p>
+<% } %>
 
     <h1>Admin Panel - User List</h1>
     <table border="1">
