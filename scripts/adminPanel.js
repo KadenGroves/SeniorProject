@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const mysql = require('mysql2');
 const db = require('./db');
 
 function isAdmin(req, res, next) {
@@ -28,7 +27,12 @@ router.get('/adminPanel', isAdmin, isStaff, (req, res) => {
             return res.status(500).send('Error fetching users');
         }
 
-        res.render('adminPanel.ejs', { users: results, currentUser: req.session.user });
+        res.render('adminPanel.ejs', {
+            users: results,
+            currentUser: req.session.user,
+            searchUser: null,   
+            searchPerformed: false  
+        });
     });
 });
 
@@ -55,7 +59,7 @@ router.post('/adminPanel/promote/:id', isStaff, (req, res) => {
                 return res.status(403).send('Only admins can promote staff to admin.');
             }
         } else if (currentRole === 'admin') {
-            newRole = 'staff'; // Ensure only one admin exists
+            newRole = 'staff';
         } else {
             return res.status(400).send('Invalid role transition.');
         }
@@ -121,6 +125,29 @@ router.post('/adminPanel/delete/:id', isStaff, (req, res) => {
                 return res.status(500).send('Error deleting user.');
             }
             res.redirect('/adminPanel');
+        });
+    });
+});
+
+//User search
+router.get('/adminPanel/search', isStaff, (req, res) => {
+    const username = req.query.username;
+    if (!username) return res.redirect('/adminPanel');
+
+    const searchQuery = 'SELECT id, username, email, role, created_at FROM users WHERE username = ?';
+    const allUsersQuery = 'SELECT id, username, email, role, created_at FROM users';
+
+    db.query(searchQuery, [username], (err, searchResults) => {
+        if (err) return res.status(500).send('Error searching user.');
+            db.query(allUsersQuery, (err, allUsers) => {
+            if (err) return res.status(500).send('Error fetching users.');
+
+            res.render('adminPanel.ejs', {
+                users: allUsers,                    
+                currentUser: req.session.user,
+                searchUser: searchResults[0] || null,
+                searchPerformed: true
+            });
         });
     });
 });
