@@ -27,7 +27,7 @@ router.get('/survey', (req, res) => {
         console.error("Failed to retrieve data:", err);
         return res.status(500).json({ error: "Failed to retrieve data" });
         }
-        res.render('survey', { prayers: results });
+        res.render('survey', { surveys: results });
     });
 });
 

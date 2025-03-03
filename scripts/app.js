@@ -25,6 +25,8 @@ const loginRoutes = require('./login');
 const prayerWallRoutes = require('./prayerWall');
 const bibleRoutes = require('./bible');
 const adminPanelRoutes = require('./adminPanel');
+const surveyRoutes = require('./survey');
+const surveyCreateRoutes = require('./surveyCreate');
 
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null; 
@@ -36,6 +38,8 @@ app.use(loginRoutes);
 app.use(prayerWallRoutes);
 app.use(bibleRoutes);
 app.use(adminPanelRoutes);
+// app.use(surveyRoutes);
+// app.use(surveyCreateRoutes);
 
 
 
@@ -69,6 +73,10 @@ app.get('/prayerWall', (req, res) => {
 
 app.get('/survey', (req, res) => {
   res.render('survey.ejs', {user: req.session.user || null});
+});
+
+app.get('/surveyCreate', (req, res) => {
+  res.render('surveyCreate.ejs', {user: req.session.user || null});
 });
 
 app.get('/landing', (req, res) => {

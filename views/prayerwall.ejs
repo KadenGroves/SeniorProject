@@ -52,36 +52,35 @@
 
     <!-- Prayer Request Form (Hidden by Default) -->
     <div id="prayerFormContainer" class="form-container" style="display: none;">
-        <h2>Submit a Prayer Request</h2>
-        <form action="/PrayerWall" method="POST" enctype="multipart/form-data" class="prayer-form">
-          <div class="form-group">
-            <label for="title" class="form-label">Title:</label>
-            <div class="input-box">
-              <input type="text" id="title" name="title" required class="form-input" />
-            </div>
+      <h2>Submit a Prayer Request</h2>
+      <form action="/PrayerWall" method="POST" enctype="multipart/form-data" class="prayer-form">
+        <div class="form-group">
+          <label for="title" class="form-label">Title:</label>
+          <div class="input-box">
+            <input type="text" id="title" name="title" required class="form-input" />
           </div>
-      
-          <div class="form-group">
-            <label for="description" class="form-label">Description:</label>
-            <div class="input-box">
-              <textarea id="description" name="description" rows="4" required class="form-input"></textarea>
-            </div>
+        </div>
+    
+        <div class="form-group">
+          <label for="description" class="form-label">Description:</label>
+          <div class="input-box">
+            <textarea id="description" name="description" rows="4" required class="form-input"></textarea>
           </div>
-      
-          <div class="form-group">
-            <label for="image" class="form-label">Optional Image:</label>
-            <div class="input-box">
-              <input type="file" id="image" name="image" accept="image/*" class="form-input" />
-            </div>
+        </div>
+    
+        <div class="form-group">
+          <label for="image" class="form-label">Optional Image:</label>
+          <div class="input-box">
+            <input type="file" id="image" name="image" accept="image/*" class="form-input" />
           </div>
-      
-          <button type="submit" class="btn submit-btn">
-            Submit Prayer Request
-          </button>
-        </form>
-      </div>
+        </div>
+    
+        <button type="submit" class="btn submit-btn">
+          Submit Prayer Request
+        </button>
+      </form>
+    </div>
 
-    <hr />
 
     <!-- Display Prayer Requests -->
     <h2>Prayer Requests</h2>
