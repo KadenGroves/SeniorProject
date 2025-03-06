@@ -39,30 +39,62 @@
     <p>Welcome to the Chat page.</p> -->
 
     <div id="main">
+        <% if (user && (user.role === 'admin' || user.role === 'staff')) { %>
+            <button id="makeThread">Create Thread</button>
+        <% } %>
+
         <div id="threadList">
-            <button class="threadOption">
-                <img src="/placeHolders/blank-profile-picture-973460_960_720.webp" alt="Thread image">
-                <p>Thread 1</p>
-            </button>
-
-            <button class="threadOption">
-                <img src="/placeHolders/blank-profile-picture-973460_960_720.webp" alt="Thread image">
-                <p>Thread 2</p>
-            </button>
-
-            <button class="threadOption">
-                <img src="/placeHolders/blank-profile-picture-973460_960_720.webp" alt="Thread image">
-                <p>Thread 3</p>
-            </button>
+            <% if (threads && threads.length > 0) { %>
+                <form action="/loadThread" method="GET">
+                <% threads.forEach(thread => { %>
+                    <button class="threadOption">
+                        <p><%= thread.name %></p>
+                    </button>
+                <% }) %>
+                </form>
+            <% } else { %>
+                <p>There are no available threads at this time</p>
+            <% } %>
         </div>
 
         <div id="divider"></div>
 
         <div id="threadDisplay">
-            
+            <div id="changeThreads" class="form-container" style="display: none;">
+                <h2>Create a new Discussion Thread</h2>
+                <form action="/createThread" method="POST">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <br>
+
+                    <label for="desc">Description:</label>
+                    <textarea name="desc" id="desc" rows="4" required></textarea>
+
+                    <button type="submit">Create New Thread</button>
+                </form>
+
+            </div>
+            <h1>Click on a thread to enter a discussion room</h1>
         </div>
+
     </div>
 
+    <script>
+        document.getElementById("makeThread").addEventListener("click", () => {
+        const formContainer = document.getElementById("changeThreads");
+        const button = document.getElementById("makeThread");
+
+        // Toggle form visibility
+        if (formContainer.style.display === "none") {
+            formContainer.style.display = "block";
+            button.innerText = "Stop Creating Thread"
+        } else {
+            formContainer.style.display = "none";
+            button.innerText = "Create Thread"
+        }
+        });
+    </script>
     
 </body>
 </html>

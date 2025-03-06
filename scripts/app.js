@@ -27,6 +27,7 @@ const bibleRoutes = require('./bible');
 const adminPanelRoutes = require('./adminPanel');
 const surveyRoutes = require('./survey');
 const surveyCreateRoutes = require('./surveyCreate');
+const chatRoutes = require('./chat');
 
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null; 
@@ -40,6 +41,7 @@ app.use(bibleRoutes);
 app.use(adminPanelRoutes);
 // app.use(surveyRoutes);
 // app.use(surveyCreateRoutes);
+app.use(chatRoutes)
 
 
 
