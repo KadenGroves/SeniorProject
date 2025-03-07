@@ -3,6 +3,15 @@ const router = express.Router();
 const db = require('./db');
 const bcrypt = require('bcrypt');
 
+
+function hideEmail(email) {
+    const atIndex = email.indexOf('@');
+    if (atIndex >= 1) {
+        return email[0] + '*****' + email.slice(atIndex);
+    }
+};
+
+
 router.get('/profile', (req, res) => {
     if (!req.session.user) {
         return res.status(401).send('Not logged in');
@@ -23,7 +32,8 @@ router.get('/profile', (req, res) => {
         }
 
         const user = results[0];
-        res.render('profile', { user });  // Pass user, not users
+        user.hiddenEmail = hideEmail(user.email);
+        res.render('profile', { user });
     });
 });
 
