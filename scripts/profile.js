@@ -3,6 +3,31 @@ const router = express.Router();
 const db = require('./db');
 const bcrypt = require('bcrypt');
 
+router.get('/profile', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).send('Not logged in');
+    }
+
+    const userId = req.session.user.id;
+
+    const query = 'SELECT id, username, email, role, created_at FROM users WHERE id = ?';
+
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching users:', err);
+            return res.status(500).send('Error fetching users');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('User not found');
+        }
+
+        const user = results[0];
+        res.render('profile', { user });  // Pass user, not users
+    });
+});
+
+
 router.post('/changePassword', (req, res) => {
     if (!req.session.user) {
         return res.status(401).send('Unauthorized');
