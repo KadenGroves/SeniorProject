@@ -9,7 +9,7 @@ const db = require('./db');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname)
+  filename: (req, file, cb) => cb(null, req.session.user.id + '.png')
 });
 const upload = multer({ storage });
 
@@ -38,6 +38,16 @@ router.post('/PrayerWall', upload.single("image"), (req, res) => {
   if (!user) {
     return res.status(401).json({ error: "You must be logged in to post a prayer request." });
   }
+
+  // req.file.filename = req.session.user.id +'.png';
+
+  // fs.rename(req.file, req.session.user.id +'.png', (err) => {
+  //   if (err) {
+  //     console.error('Error renaming file:', err);
+  //   } else {
+  //     console.log('File renamed successfully!');
+  //   }
+  // });
 
   const authorId = user.id;
   const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;

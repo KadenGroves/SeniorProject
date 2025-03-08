@@ -38,7 +38,7 @@ app.use(loginRoutes);
 app.use(prayerWallRoutes);
 app.use(bibleRoutes);
 app.use(adminPanelRoutes);
-// app.use(surveyRoutes);
+app.use(surveyRoutes);
 // app.use(surveyCreateRoutes);
 
 
