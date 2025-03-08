@@ -467,3 +467,106 @@ p {
 .btn:hover {
   background-color: #244d24;
 }
+
+
+
+/*Profile Page*/
+/* Profile Page Wrapper - centers the profile container horizontally */
+.profile-page-wrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  box-sizing: border-box;
+  background-color: #f4f1e6; /* Matches your prayer container background */
+}
+
+/* Profile Container - styled to match your cards, auth containers, etc. */
+.profile-container {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #8b9a8f;
+  width: 90%;
+  max-width: 600px;
+  text-align: left; /* Aligning text left for better readability */
+  font-family: 'Lato', sans-serif;
+  color: #3e3e3e;
+}
+
+/* Profile Header */
+.profile-container h2 {
+  color: #2d572c; /* Your green color */
+  font-size: 1.8em;
+  margin-bottom: 15px;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  text-align: center;
+}
+
+/* Profile description text */
+.profile-container p {
+  font-size: 1.1em;
+  color: #555;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Profile Table Styling */
+.profile-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background-color: #f9f9f9; /* Slight contrast */
+  border: 1px solid #8b9a8f;
+}
+
+.profile-container th {
+  background-color: #ebe6d8; /* Light beige */
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+  color: #2d572c;
+  border: 1px solid #8b9a8f;
+}
+
+.profile-container td {
+  padding: 12px;
+  border: 1px solid #8b9a8f;
+  background-color: white;
+  color: #3e3e3e;
+}
+
+.change-password-form {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #ebe6d8; 
+  border: 1px solid #8b9a8f;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.change-password-form h3 {
+  margin-top: 0;
+  color: #2d572c;
+  font-size: 1.4em;
+  font-family: 'Lato', sans-serif;
+  margin-bottom: 15px;
+}
+
+
+/* Mobile-friendly adjustments */
+@media (max-width: 768px) {
+  .profile-container {
+      padding: 20px;
+  }
+
+  .profile-container table {
+      font-size: 0.9em;
+  }
+
+  .profile-container h2 {
+      font-size: 1.5em;
+  }
+}

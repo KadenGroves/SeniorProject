@@ -27,6 +27,7 @@ const bibleRoutes = require('./bible');
 const adminPanelRoutes = require('./adminPanel');
 const surveyRoutes = require('./survey');
 const surveyCreateRoutes = require('./surveyCreate');
+const profileRoutes = require('./profile');
 
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null; 
@@ -38,6 +39,8 @@ app.use(loginRoutes);
 app.use(prayerWallRoutes);
 app.use(bibleRoutes);
 app.use(adminPanelRoutes);
+app.use(profileRoutes);
+// app.use(surveyRoutes);
 app.use(surveyRoutes);
 // app.use(surveyCreateRoutes);
 
