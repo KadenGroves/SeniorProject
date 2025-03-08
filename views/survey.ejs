@@ -45,6 +45,44 @@
     <br>
     <br>
 
+    <div>
+        <!-- Checking if surveys and survey_questions have data to display -->
+        <% if (surveys && surveys.length > 0 && survey_questions.length > 0) { %>
+            <h1><%= surveys.title %></h1>
+            <!-- Every question is generated here. There are 4 types -->
+            <% survey_questions.forEach(q => { %>
+                <% if (q.question_type == "short") { %>
+                    <div class="question">
+                        <h3><%= q.question_text %></h3>
+                        <input id="<%= q.id %>" type="text">
+                    </div>
+                <% } else if (question.question_type == "long") { %>
+                    <div class="question">
+                        <h3><%= q.question_text %></h3>
+                        <textarea id="<%= q.id %>" name="description" rows="3" class="form-input"></textarea>
+                    </div>
+                <% } else if (question.question_type == "bubble") { %>
+                    <div class="question">
+                        <h3><%= q.question_text %></h3>
+                        <% q.qestion_choices.forEach(c => { %>
+                            <input type="radio" id="<%= c.choice %>" value="<%= c.choice %>"/>
+                            <label for="<%= c.choice %>"><%= c.choice %></label>
+                        <% }); %>
+                    </div>
+                <% } else if (question.question_type == "checkbox") { %>
+                    <div class="question">
+                        <% q.qestion_choices.forEach(c => { %>
+                            <h3><%= q.question_text %></h3>
+                            <input id="<%= c.choice %>" type="checkbox">
+                            <label for="<%= c.choice %>"><%= c.choice %></label>
+                        <% }); %>
+                    </div>
+                <% } %>
+            <% }); %>
+        <% } %>
+    </div>
+
+
     <form>
         <h1>Survey Name</h1>
 

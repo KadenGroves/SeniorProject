@@ -41,6 +41,7 @@ app.use(bibleRoutes);
 app.use(adminPanelRoutes);
 app.use(profileRoutes);
 // app.use(surveyRoutes);
+app.use(surveyRoutes);
 // app.use(surveyCreateRoutes);
 
 
