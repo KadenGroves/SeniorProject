@@ -40,7 +40,7 @@
 
     <div id="main">
         <% if (user && (user.role === 'admin' || user.role === 'staff')) { %>
-            <button id="makeThread">Create Thread</button>
+            <button id="makeThread">Change Threads</button>
         <% } %>
 
         <div id="threadList">
@@ -74,6 +74,16 @@
                     <button type="submit">Create New Thread</button>
                 </form>
 
+                <h2>Delete a Thread</h2>
+                <form action="/deleteThread" method="POST">
+                    <label for="deleteOne">Input a thread name:</label>
+                    <input type="text" id="deleteOne" name="deleteOne" required>
+
+                    <label for="deleteTwo">Input the same thread name:</label>
+                    <input type="text" id="deleteTwo" name="deleteTwo" required>
+
+                    <button type="submit">Delete Thread</button>
+                </form>
             </div>
             <h1>Click on a thread to enter a discussion room</h1>
         </div>
@@ -88,10 +98,10 @@
         // Toggle form visibility
         if (formContainer.style.display === "none") {
             formContainer.style.display = "block";
-            button.innerText = "Stop Creating Thread"
+            button.innerText = "Stop Changing Threads"
         } else {
             formContainer.style.display = "none";
-            button.innerText = "Create Thread"
+            button.innerText = "Change Threads"
         }
         });
     </script>

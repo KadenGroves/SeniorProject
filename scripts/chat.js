@@ -22,7 +22,7 @@ router.post('/createThread', (req, res) => {
     const user = req.session.user;
 
     if (!user) {
-      return res.status(401).json({ error: "You must be logged in to post a prayer request." });
+      return res.status(401).json({ error: "You must be logged in to create a thread." });
     }
   
     if (!name) {
@@ -38,5 +38,27 @@ router.post('/createThread', (req, res) => {
       res.redirect('/chat');
     });
 });
+
+router.post('/deleteThread', (req, res) => {
+    const {deleteOne, deleteTwo} = req.body;
+    const user = req.session.user;
+
+    if (deleteOne != deleteTwo) {
+      return res.status(501).json({ error: "Both inputs must be equal" });
+    }
+
+    if (!user) {
+      return res.status(401).json({ error: "You must be logged in to delete a thread." });
+    }
+
+    const sql = "DELETE FROM chat_rooms WHERE name = ?";
+    db.query(sql, [deleteOne], (err) => {
+      if (err) {
+        console.error("Failed to delete thread", err);
+        return res.status(502).json({ error: "Failed to delete thead" });
+      }
+      res.redirect('/chat');
+    });
+})
 
 module.exports = router;
