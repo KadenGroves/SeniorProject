@@ -1,8 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
 
+// Multer image stuff
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, "uploads/profilePics"), // profile images will be placed here
+    filename: (req, file, cb) => cb(null, req.session.user.id + '.png') // name of image is user's id
+});
+const upload = multer({ storage });
+if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
+router.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 function hideEmail(email) {
     const atIndex = email.indexOf('@');
@@ -37,6 +48,26 @@ router.get('/profile', (req, res) => {
     });
 });
 
+
+router.post('/uploadProfileImage', upload.single("image"), (req, res) => {
+    const user = req.session.user;
+
+    const imageUrl = req.file ? `/uploads/profilePics/${req.file.filename}` : null;
+    // console.log(req.file.filename);
+    // console.log(req);
+    // console.log(req.file);
+
+    const sql = 'UPDATE users SET profile_picture = ? WHERE id = ?';
+    console.log(imageUrl, user.id);
+    db.query(sql, [imageUrl, user.id], (err) => {
+        if (err) {
+            console.error("Failed to replace Image:", err);
+            return res.status(500).json({ error: "Failed to replace Image" });
+        }
+        console.log("successful profile image upload");
+        res.redirect('/profile');
+    });
+});
 
 router.post('/changePassword', (req, res) => {
     if (!req.session.user) {

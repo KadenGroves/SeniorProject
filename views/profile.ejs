@@ -13,7 +13,7 @@
 <body>
     <nav>
         <div id="currentUser">
-            <img src="/placeHolders/Owen Icon.png" alt="User Img">
+            <img src="/placeHolders/blankPic.webp" alt="User Img">
             <h3>User Name</h3>
         </div>
         <div id="navButtons">
@@ -54,6 +54,17 @@
                 <div class="form-group">
                     <label for="newPassword">New Password:</label>
                     <input type="password" id="newPassword" name="newPassword" required>
+                </div>
+                <button type="submit" class="btn">Change Password</button>
+            </form>
+
+            <form action="/uploadProfileImage" method="POST" enctype="multipart/form-data" class="form-group">
+                <h3>Change Profile Image</h3>
+                <div class="form-group">
+                    <div class="input-box">
+                        <label for="image" class="form-label">Optional Image:</label>
+                        <input type="file" id="image" name="image" accept="image/*" class="form-input" />
+                    </div>
                 </div>
                 <button type="submit" class="btn">Change Password</button>
             </form>

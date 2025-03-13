@@ -2,8 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+// const bcrypt = require('bcrypt');
 const app = express(); 
+
 const session = require('express-session');
+
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'mySecretKey',
@@ -35,6 +38,8 @@ app.use((req, res, next) => {
 });
 
 
+
+
 app.use(loginRoutes);
 app.use(prayerWallRoutes);
 app.use(bibleRoutes);
@@ -44,9 +49,8 @@ app.use(profileRoutes);
 app.use(surveyRoutes);
 // app.use(surveyCreateRoutes);
 
-
-
 app.get('/', (req, res) => {
+  console.log(req.session.user.id);
   res.render('home.ejs', {user: req.session.user || null});
 });
 
