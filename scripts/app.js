@@ -58,6 +58,12 @@ const adminPanelRoutes = require('./adminPanel');
 const surveyRoutes = require('./survey');
 const surveyCreateRoutes = require('./surveyCreate');
 const profileRoutes = require('./profile');
+const chatRoutes = require('./chat');
+
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null; 
+  next();
+});
 
 
 app.use(loginRoutes);
@@ -68,6 +74,7 @@ app.use(profileRoutes);
 // app.use(surveyRoutes);
 app.use(surveyRoutes);
 // app.use(surveyCreateRoutes);
+app.use(chatRoutes)
 
 app.get('/', (req, res) => {
   console.log(req.session.user.id);
