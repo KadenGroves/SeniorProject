@@ -9,17 +9,14 @@
 <body>
     <nav>
         <div id="currentUser">
-            <% if (user && user.profile_picture != "") {%>
+            <% if (user && user.profile_picture) { %>
                 <img src="<%= user.profile_picture %>" alt="User Img">
-                <h3><%= user.username %></h3>
-            <% } else if (user) {%>
-                <img src="/uploads/default-profile.png" alt="User Img">
                 <h3><%= user.username %></h3>
             <% } else { %>
                 <img src="/uploads/default-profile.png" alt="User Img">
-                <h3></h3>
+                <h3>Guest</h3>
             <% } %>
-        </div>
+          </div>
         <div id="navButtons">
             <a class="button" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
             <a class="button" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg"> Profile</a>
@@ -32,9 +29,6 @@
             <% } %>
             <a class="button" href="/logout">Logout</a>
             
-        </div>
-        <div id="orgImage">
-            <img src="https://www.iconpacks.net/free-icon/user-3296.html" alt="org Img">
         </div>
     </nav>
     <h2>Search User</h2>

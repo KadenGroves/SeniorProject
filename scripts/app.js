@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const db = require('./db');
 // const bcrypt = require('bcrypt');
 const app = express(); 
 
@@ -14,6 +15,32 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false }
 }));
+
+//makes user avaliable in all views
+app.use((req, res, next) => {
+  if (req.session.user) {
+    const userId = req.session.user.id;
+    db.query('SELECT username, profile_picture FROM users WHERE id = ?', [userId], (err, results) => {
+      if (err) {
+        console.error('Error fetching user data:', err);
+        return next();
+      }
+      
+      if (results.length > 0) {
+        req.session.user.username = results[0].username;
+        req.session.user.profile_picture = results[0].profile_picture || '/uploads/default-profile.png';
+      } else {
+        req.session.user.profile_picture = '/uploads/default-profile.png';
+      }
+      
+      res.locals.user = req.session.user;
+      next();
+    });
+  } else {
+    res.locals.user = null;
+    next();
+  }
+});
 
 app.set('view engine', 'ejs');
 
@@ -31,13 +58,6 @@ const adminPanelRoutes = require('./adminPanel');
 const surveyRoutes = require('./survey');
 const surveyCreateRoutes = require('./surveyCreate');
 const profileRoutes = require('./profile');
-
-app.use((req, res, next) => {
-  res.locals.user = req.session.user || null; 
-  next();
-});
-
-
 
 
 app.use(loginRoutes);
