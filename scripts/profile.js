@@ -24,8 +24,9 @@ function hideEmail(email) {
 
 
 router.get('/profile', (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).send('Not logged in');
+    if (req.session.user == null) {
+        res.redirect('/login');
+        return;
     }
 
     const userId = req.session.user.id;

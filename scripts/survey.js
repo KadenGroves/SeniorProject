@@ -9,6 +9,11 @@ const db = require('./db');
 
 
 router.get('/survey', (req, res) => {
+    if (req.session.user == null) {
+        res.redirect('/login');
+        return;
+    }
+
     const sql = `
         SELECT surveys.*, survey_questions.*, questions_choices.*
         FROM surveys

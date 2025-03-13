@@ -19,6 +19,11 @@ function isStaff(req, res, next) {
 }
 
 router.get('/adminPanel', isAdmin, isStaff, (req, res) => {
+    if (req.session.user == null) {
+        res.redirect('/login')
+        return;
+    }
+
     const query = 'SELECT id, username, email, role, created_at FROM users';
 
     db.query(query, (err, results) => {
