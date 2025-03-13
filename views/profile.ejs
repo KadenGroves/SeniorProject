@@ -46,8 +46,6 @@
     <div class="profile-page-wrapper">
         <div class="profile-container">
             <table>
-                <h3>Change Profile picture:</h3>
-                
                 <tr><th>Username</th><td><%= user.username %></td></tr>
                 <tr><th>Email:</th><td><%= user.hiddenEmail %></td></tr>
                 <tr><th>You Joined Ministry Meetup:</th><td><%= new Date(user.created_at).toLocaleString() %></td></tr>
