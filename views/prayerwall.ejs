@@ -16,28 +16,36 @@
 </head>
 <body>
   
-    <nav>
-        <div id="currentUser">
-            <img src="/placeHolders/Owen Icon.png" alt="User Img">
-            <h3>User Name</h3>
-        </div>
-        <div id="navButtons">
-            <input type="text" placeholder="Search">
-            <a class="button" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
-            <a class="button" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg"> Profile</a>
-            <a class="button" href="/survey"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey</a>
-            <a class="button" href="/prayerwall"><img class="icon" src="/Icons/svgs/solid/thumbtack.svg"> Prayer Wall</a>
-            <a class="button" href="/chat"><img class="icon" src="/Icons/svgs/solid/comment.svg"> Chat</a>
-            <a class="button" href="/calendar"><img class="icon" src="/Icons/svgs/solid/calendar.svg"> Calendar</a>
-            <% if (user && user.role === 'admin') { %>
-              <a class="button" href="/adminPanel">adminPanel</a>
-          <% } %>
-            <a class="button" href="/logout">Logout</a>
-        </div>
-        <div id="orgImage">
-            <img src="https://www.iconpacks.net/free-icon/user-3296.html" alt="org Img">
-        </div>
-    </nav>
+  <nav>
+    <div id="currentUser">
+        <% if (user && user.profile_picture != "") {%>
+            <img src="<%= user.profile_picture %>" alt="User Img">
+            <h3><%= user.username %></h3>
+        <% } else if (user) {%>
+            <img src="/uploads/default-profile.png" alt="User Img">
+            <h3><%= user.username %></h3>
+        <% } else { %>
+            <img src="/uploads/default-profile.png" alt="User Img">
+            <h3></h3>
+        <% } %>
+    </div>
+    <div id="navButtons">
+        <a class="button" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
+        <a class="button" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg"> Profile</a>
+        <a class="button" href="/survey"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey</a>
+        <a class="button" id="currentPageButton" href="/prayerwall"><img class="icon" src="/Icons/svgs/solid/thumbtack.svg"> Prayer Wall</a>
+        <a class="button" href="/chat"><img class="icon" src="/Icons/svgs/solid/comment.svg"> Chat</a>
+        <a class="button" href="/calendar"><img class="icon" src="/Icons/svgs/solid/calendar.svg"> Calendar</a>
+        <% if (user && user.role === 'admin') { %>
+            <a class="button" href="/adminPanel">adminPanel</a>
+        <% } %>
+        <a class="button" href="/logout">Logout</a>
+        
+    </div>
+    <div id="orgImage">
+        <img src="https://www.iconpacks.net/free-icon/user-3296.html" alt="org Img">
+    </div>
+</nav>
 
   <main class="prayer-container">
     <h1>Prayer Wall</h1>

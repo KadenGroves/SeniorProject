@@ -30,7 +30,7 @@ router.get('/profile', (req, res) => {
 
     const userId = req.session.user.id;
 
-    const query = 'SELECT id, username, email, role, created_at FROM users WHERE id = ?';
+    const query = 'SELECT id, username, email, role, created_at, profile_picture FROM users WHERE id = ?';
 
     db.query(query, [userId], (err, results) => {
         if (err) {

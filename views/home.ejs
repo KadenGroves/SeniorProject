@@ -13,12 +13,19 @@
 <body>
     <nav>
         <div id="currentUser">
-            <img src="/placeHolders/Owen Icon.png" alt="User Img">
-            <h3>User Name</h3>
+            <% if (user && user.profile_picture != "") {%>
+                <img src="<%= user.profile_picture %>" alt="User Img">
+                <h3><%= user.username %></h3>
+            <% } else if (user) {%>
+                <img src="/uploads/default-profile.png" alt="User Img">
+                <h3><%= user.username %></h3>
+            <% } else { %>
+                <img src="/uploads/default-profile.png" alt="User Img">
+                <h3></h3>
+            <% } %>
         </div>
         <div id="navButtons">
-            <input type="text" placeholder="Search">
-            <a class="button" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
+            <a class="button" id="currentPageButton" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
             <a class="button" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg"> Profile</a>
             <a class="button" href="/survey"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey</a>
             <a class="button" href="/prayerwall"><img class="icon" src="/Icons/svgs/solid/thumbtack.svg"> Prayer Wall</a>
