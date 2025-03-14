@@ -53,17 +53,28 @@
     <div>
         <!-- Checking if surveys and survey_questions have data to display -->
         <% if (surveys && surveys.length > 0) { %>
-            <h1><%= surveys.title %></h1>
-            <% console.log(surveys); %>
             <!-- Every question is generated here. There are 4 types -->
             <% let array = []; let resetArray = false;%>
             <% surveys.forEach((Q, index, arr) => { %>
-                <% // console.log(Q.choice); console.log(Q.question_type); %>
-
+                
+                <% if (index == 0) { %>
+                    <form>
+                    <h1><%= surveys[0].title %></h1>
+                    <div id="personsInfo">
+                        <label for="name">Name</label>
+                        <input id="name" type="text">
+                        <br>
+                        <label for="major">Major</label>
+                        <input id="major" type="text">
+                        <br>
+                        <label for="year">Year</label>
+                        <input id="year" type="text">
+                    </div>
+                <% } %> 
                 
                 <% if (index < arr.length - 1 && arr[index+1].question_id == Q.question_id) {
-                    array.push(Q.choice);
-                    return;
+                    array.push(Q.choice); %>
+                    <% return;
                 } else if (index != 0 && arr[index-1].question_id == Q.question_id) {
                     array.push(Q.choice);
                     resetArray = true;
@@ -84,7 +95,7 @@
                     <div class="question">
                         <h3><%= Q.question_text %></h3>
                         <% array.forEach(c => { %>
-                            <input type="radio" id="<%= c %>" value="<%= c %>"/>
+                            <input id="<%= c %>"  type="radio" name="question<% Q.question_id %>" value="<%= c %>"/>
                             <label for="<%= c %>"><%= c %></label>
                         <% }); %>
                     </div>
@@ -98,10 +109,15 @@
                     </div>
                 <% } %>
 
-                <% if (resetArray) { 
-                    array = []; 
-                    resetArray = false; 
-                } %>
+                <% if (resetArray) { array = []; resetArray = false; } %>
+                <% if (index == arr.length - 1) { %>
+                    <br>
+                    <button type="submit" class="btn submit-btn">
+                        Submit
+                    </button>
+                    </form>
+                <% } %>
+                
             <% }); %>
         <% } %> 
     </div>
