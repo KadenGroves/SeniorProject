@@ -50,27 +50,39 @@
     </button> -->
 
     <!-- Prayer Request Form (Hidden by Default) -->
-    <div id="prayerFormContainer" class="form-container" style="display: none;">
-        <h2>Submit a Prayer Request</h2>
+    <div class="add-button">
+        <h1>Add Question:</h1>
+        <button class="btn submit-btn">Short</button>
+        <button class="btn submit-btn">Long</button>
+        <button class="btn submit-btn">Select</button>
+        <button class="btn submit-btn">Check</button>
+    </div>
+
+    <div id="surveyCreateForm" class="form-container" style="display: inherit;">
+        <h2>Create a survey</h2>
         <form action="/PrayerWall" method="POST" enctype="multipart/form-data" class="prayer-form">
             <div class="form-group">
-                <label for="title" class="form-label">Title:</label>
+                <label for="questionText" class="form-label">Question</label>
                 <div class="input-box">
-                    <input type="text" id="title" name="title" required class="form-input" />
+                    <input type="text" id="questionText" name="questionText" required class="form-input" />
                 </div>
             </div>
+
+            <div class="form-group">
+                <label for="tyle" class="form-label">Question Type:</label>
+                <select id="tyle" name="tyle" class="form-input">
+                    <option value="short">Short Answer</option>
+                    <option value="long">Long Answer</option>
+                    <option value="bubble">Select One</option>
+                    <option value="checkBox">Checkboxes</option>
+                </select>   
+            </div>
+            <button type="submit" class="btn submit-btn">Choose</button>             
         
             <div class="form-group">
                 <label for="description" class="form-label">Description:</label>
                 <div class="input-box">
                     <textarea id="description" name="description" rows="4" required class="form-input"></textarea>
-                </div>
-            </div>
-        
-            <div class="form-group">
-                <label for="image" class="form-label">Optional Image:</label>
-                <div class="input-box">
-                    <input type="file" id="image" name="image" accept="image/*" class="form-input" />
                 </div>
             </div>
         
