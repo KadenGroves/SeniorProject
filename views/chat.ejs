@@ -47,19 +47,21 @@
     <p>Welcome to the Chat page.</p> -->
 
     <div id="main">
-        <% if (user && (user.role === 'admin' || user.role === 'staff')) { %>
-            <button id="makeThread">Change Threads</button>
-        <% } %>
 
         <div id="threadList">
+            <% if (user && (user.role === 'admin' || user.role === 'staff')) { %>
+                <button id="makeThread" class="threadOption">Change Threads</button>
+
+                <hr>
+                <br>
+            <% } %>
+
             <% if (threads && threads.length > 0) { %>
-                <form action="/loadThread" method="GET">
                 <% threads.forEach(thread => { %>
-                    <button class="threadOption">
-                        <p><%= thread.name %></p>
-                    </button>
+                    <form action="/chat/<%= thread.name %>" method="GET">
+                        <button class="threadOption" type="submit"><%= thread.name %></button>
+                    </form>
                 <% }) %>
-                </form>
             <% } else { %>
                 <p>There are no available threads at this time</p>
             <% } %>
@@ -93,7 +95,16 @@
                     <button type="submit">Delete Thread</button>
                 </form>
             </div>
-            <h1>Click on a thread to enter a discussion room</h1>
+
+            <% if (messages) { %>
+                
+
+                <form action="/postMessage">
+                    <input type="text" name="message" placeholder="Message" style="display: inline;" required>
+                    <button type="submit" style="display: inline;">Post</button>
+                </form>
+            <% } %>
+
         </div>
 
     </div>
