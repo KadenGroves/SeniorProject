@@ -97,9 +97,11 @@
             </div>
 
             <% if (messages) { %>
-                
+                <% messages.forEach(message => { %>
+                    <p><%= message.sender_id %>: <%= message.message %></p>
+                <% }) %>
 
-                <form action="/postMessage">
+                <form action="/postMessage/<%= threadName %>" method="POST">
                     <input type="text" name="message" placeholder="Message" style="display: inline;" required>
                     <button type="submit" style="display: inline;">Post</button>
                 </form>

@@ -68,8 +68,37 @@ router.post('/deleteThread', (req, res) => {
   });
 })
 
-router.post('/postMessage', (req, res) => {
+router.post('/postMessage/:name', (req, res) => {
+  const {message} = req.body;
+  const room = req.params.name;
+  const user = req.session.user;
 
+  if (!user) {
+    return res.status(402).json({ error: "You must be logged in to post a message." });
+  }
+
+  if (!message) {
+    return res.status(405).send('Error posting message');
+  }
+
+  const sqlMessage = `INSERT INTO chat_messages (room_id, sender_id, message) VALUES (?, ?, ?)`;
+  const sqlRoom = `SELECT id FROM chat_rooms WHERE name = ?`;
+
+  db.query(sqlRoom, [room], (err, roomID) => {
+    if (err) {
+      console.error('Error retrieving room ID', err);
+      return res.status(408).send('Error retrieving room ID');
+    }
+
+    db.query(sqlMessage, [roomID[0].id, user.id, message], (err, results) => {
+      if (err) {
+        console.error('Error posting new message', err);
+        return res.status(408).send('Error posting new message');
+      }
+      res.redirect('/chat');
+    })
+  })
+  
 })
 
 router.get('/chat/:thread', (req, res) => {
@@ -81,9 +110,9 @@ router.get('/chat/:thread', (req, res) => {
 
   const sqlThreads = 'SELECT * FROM chat_rooms';
   const sqlMessages = `
-  SELECT message, sender_id 
+  SELECT message, sender_id, room_id
   FROM chat_messages 
-  WHERE room_id = (SELECT id FROM chat_rooms WHERE name = ?);`;
+  WHERE room_id = (SELECT id FROM chat_rooms WHERE name = ?)`;
 
   db.query(sqlMessages, [thread], (err, messageResults) => {
     if (err) {
@@ -99,7 +128,8 @@ router.get('/chat/:thread', (req, res) => {
 
       res.render('chat.ejs', {
         threads: threadResults,
-        messages: messageResults
+        messages: messageResults,
+        threadName: thread
       });
     })
 
