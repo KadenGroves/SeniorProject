@@ -56,7 +56,7 @@ const prayerWallRoutes = require('./prayerWall');
 const bibleRoutes = require('./bible');
 const adminPanelRoutes = require('./adminPanel');
 const surveyRoutes = require('./survey');
-const surveyCreateRoutes = require('./surveyCreate');
+// const surveyCreateRoutes = require('./surveyCreate');
 const profileRoutes = require('./profile');
 
 

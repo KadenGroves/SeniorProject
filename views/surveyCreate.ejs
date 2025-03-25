@@ -50,15 +50,15 @@
     </button> -->
 
     <!-- Prayer Request Form (Hidden by Default) -->
-    <div class="add-button">
+    <div class="add-question">
         <h1>Add Question:</h1>
-        <button class="btn submit-btn">Short</button>
-        <button class="btn submit-btn">Long</button>
-        <button class="btn submit-btn">Select</button>
-        <button class="btn submit-btn">Check</button>
+        <button class="btn add-button" id="add-short">Short</button>
+        <button class="btn add-button" id="add-long">Long</button>
+        <button class="btn add-button" id="add-select">Select</button>
+        <button class="btn add-button" id="add-check">Check</button>
     </div>
 
-    <div id="surveyCreateForm" class="form-container" style="display: inherit;">
+    <!-- <div id="surveyCreateForm" class="form-container" style="display: inherit;">
         <h2>Create a survey</h2>
         <form action="/PrayerWall" method="POST" enctype="multipart/form-data" class="prayer-form">
             <div class="form-group">
@@ -88,7 +88,89 @@
         
             <button type="submit" class="btn submit-btn">Submit Prayer Request</button>
         </form>
-    </div>
+    </div> -->
 
+    <div>
+        <!-- Checking if surveys and survey_questions have data to display -->
+        <% if (surveys && surveys.length > 0) { %>
+            <!-- Every question is generated here. There are 4 types -->
+            <% let array = []; let resetArray = false;%>
+            <% surveys.forEach((Q, index, arr) => { %>
+                
+                <% if (index == 0) { %>
+                    <form>
+                    <h1><%= surveys[0].title %></h1>
+                    <div id="personsInfo">
+                        <label for="name">Name</label>
+                        <input id="name" type="text">
+                        <br>
+                        <label for="major">Major</label>
+                        <input id="major" type="text">
+                        <br>
+                        <label for="year">Year</label>
+                        <input id="year" type="text">
+                    </div>
+                <% } %> 
+                
+                <% if (index < arr.length - 1 && arr[index+1].question_id == Q.question_id) {
+                    array.push(Q.choice); %>
+                    <% return;
+                } else if (index != 0 && arr[index-1].question_id == Q.question_id) {
+                    array.push(Q.choice);
+                    resetArray = true;
+                } %>
+                
+
+                <% if (Q.question_type == "short") { %>
+                    <div class="question">
+                        <h3><%= Q.question_text %></h3>
+                        <input id="<%= Q.question_id %>" type="text">
+                    </div>
+                <% } else if (Q.question_type == "long") { %>
+                    <div class="question">
+                        <h3><%= Q.question_text %></h3>
+                        <textarea id="<%= Q.question_id %>" name="description" rows="3" class="form-input"></textarea>
+                    </div>
+                <% } else if (Q.question_type == "bubble") { %>
+                    <div class="question">
+                        <h3><%= Q.question_text %></h3>
+                        <% array.forEach(c => { %>
+                            <input id="<%= c %>"  type="radio" name="question<% Q.question_id %>" value="<%= c %>"/>
+                            <label for="<%= c %>"><%= c %></label>
+                        <% }); %>
+                    </div>
+                <% } else if (Q.question_type == "checkBox") { %>
+                    <div class="question">
+                        <h3><%= Q.question_text %></h3>
+                        <% array.forEach(c => { %>
+                            <input id="<%= c %>" type="checkbox">
+                            <label for="<%= c %>"><%= c %></label>
+                        <% }); %>
+                    </div>
+                <% } %>
+
+                <% if (resetArray) { array = []; resetArray = false; } %>
+                <% if (index == arr.length - 1) { %>
+                    </form>
+                <% } %>
+                
+            <% }); %>
+        <% } %> 
+        <script>
+            document.getElementById("add-short").addEventListener("click", () => {
+            const formContainer = document.getElementById("prayerFormContainer");
+            const button = document.getElementById("togglePrayerForm");
+
+            // Toggle form visibility
+            if (formContainer.style.display === "none" || formContainer.style.display === "") {
+                formContainer.style.display = "block";
+                button.innerText = "Close Pin A Prayer";
+            } else {
+                formContainer.style.display = "none";
+                button.innerText = "Pin A Prayer";
+            }
+            });
+        </script>
+    </div>
 </body>
 </html>

@@ -56,25 +56,27 @@
             <!-- Every question is generated here. There are 4 types -->
             <% let array = []; let resetArray = false;%>
             <% surveys.forEach((Q, index, arr) => { %>
-                
+
                 <% if (index == 0) { %>
-                    <form>
+                    <% console.log(Q); %>
+                    <form action="surveyForm" method="POST">
+                    <input type="text" name="surveyId" value="<%= Q.survey_id %>" hidden>
                     <h1><%= surveys[0].title %></h1>
                     <div id="personsInfo">
                         <label for="name">Name</label>
-                        <input id="name" type="text">
+                        <input id="name" name="name" type="text">
                         <br>
                         <label for="major">Major</label>
-                        <input id="major" type="text">
+                        <input id="major"  name="major" type="text">
                         <br>
                         <label for="year">Year</label>
-                        <input id="year" type="text">
+                        <input id="year" name="year" type="text">
                     </div>
                 <% } %> 
                 
                 <% if (index < arr.length - 1 && arr[index+1].question_id == Q.question_id) {
-                    array.push(Q.choice); %>
-                    <% return;
+                    array.push(Q.choice);
+                    return;
                 } else if (index != 0 && arr[index-1].question_id == Q.question_id) {
                     array.push(Q.choice);
                     resetArray = true;
@@ -84,28 +86,36 @@
                 <% if (Q.question_type == "short") { %>
                     <div class="question">
                         <h3><%= Q.question_text %></h3>
-                        <input id="<%= Q.question_id %>" type="text">
+                        <div class="input-box">
+                            <input id="<%= Q.question_id %>" name="<%= Q.question_id %>" type="text">
+                        </div>
                     </div>
                 <% } else if (Q.question_type == "long") { %>
                     <div class="question">
                         <h3><%= Q.question_text %></h3>
-                        <textarea id="<%= Q.question_id %>" name="description" rows="3" class="form-input"></textarea>
+                        <div class="input-box">
+                            <textarea id="<%= Q.question_id %>" name="<%= Q.question_id %>" rows="3" class="form-input"></textarea>
+                        </div>
                     </div>
                 <% } else if (Q.question_type == "bubble") { %>
                     <div class="question">
                         <h3><%= Q.question_text %></h3>
-                        <% array.forEach(c => { %>
-                            <input id="<%= c %>"  type="radio" name="question<% Q.question_id %>" value="<%= c %>"/>
+                        <div class="input-box">
+                            <% array.forEach(c => { %>
+                            <input id="<%= c %>"  type="radio" name="<%= Q.question_id %>" value="<%= c %>"/>
                             <label for="<%= c %>"><%= c %></label>
-                        <% }); %>
+                            <% }); %>
+                        </div>
                     </div>
                 <% } else if (Q.question_type == "checkBox") { %>
                     <div class="question">
                         <h3><%= Q.question_text %></h3>
-                        <% array.forEach(c => { %>
-                            <input id="<%= c %>" type="checkbox">
+                        <div class="input-box">
+                            <% array.forEach(c => { %>
+                            <input id="<%= c %>" name="<%= Q.question_id %>" type="checkbox">
                             <label for="<%= c %>"><%= c %></label>
-                        <% }); %>
+                            <% }); %>
+                        </div>
                     </div>
                 <% } %>
 
@@ -123,6 +133,5 @@
     </div>
 
     <br>
-
 </body>
 </html>

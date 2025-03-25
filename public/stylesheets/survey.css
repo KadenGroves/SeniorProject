@@ -9,6 +9,13 @@ form {
     padding-bottom: 30px;
 }
 
-/* .add-button {
+.add-question {
+    position: static;
+    background-color: white;
+    padding: 30px;
+    padding-top: 5px;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
 
-} */
+}
