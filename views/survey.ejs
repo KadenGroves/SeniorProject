@@ -58,7 +58,7 @@
             <% surveys.forEach((Q, index, arr) => { %>
 
                 <% if (index == 0) { %>
-                    <% console.log(Q); %>
+                    <% // console.log(Q); %>
                     <form action="surveyForm" method="POST">
                     <input type="text" name="surveyId" value="<%= Q.survey_id %>" hidden>
                     <h1><%= surveys[0].title %></h1>

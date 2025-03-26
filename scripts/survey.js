@@ -5,9 +5,21 @@ const fs = require('fs');
 const router = express.Router();
 const db = require('./db');
 const { log } = require('console');
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
-
-// const userId = req.session.user.id;
+// JSDOM.fromURL("your_url").then(dom => {
+//     const document = dom.window.document;
+//     document.addEventListener("DOMContentLoaded", () => {
+//         // Your code to access and manipulate DOM elements goes here
+//         const element = document.querySelector("#myElement");
+//         if (element) {
+//         console.log(element.textContent);
+//         }
+//     });
+//     }).catch(error => {
+//     console.error("Error fetching or parsing the page:", error);
+// });
 
 
 router.get('/survey', (req, res) => {
@@ -27,31 +39,60 @@ router.get('/survey', (req, res) => {
 });
 
 router.post('/surveyForm', (req, res) => {
-    console.log("begin submit");
+    // console.log("begin submit");
+    const z = req.body;
+    // console.log(z);
+
+    // console.log("inputing into database responces");
+    const sql = "INSERT INTO survey_responses (survey_id, respondor, res_phone, res_major, surveyor_id) VALUES (?, ?, ?, ?, ?)";
+    db.query(sql, [z.surveyId, z.name, z.major, z.year, 1], (err) => {
+        if (err) {
+            console.error("Failed to submit survey answers:", err);
+            return res.status(500).json({ error: "Failed to submit survey answers" });
+        }
+    });
+
+    function getResponseId(callback) {
+        const sql2 = `
+            SELECT id FROM survey_responses 
+            ORDER BY id DESC
+            LIMIT 1;`;
     
-    const all = req.body;
-
-    console.log(all);
-
-    for (const key in all) {
-        if (all.hasOwnProperty(key)) {
-            if (key == "surveyId") {} else {
-                const value = all[key];
-                // Do something with key and value
-                console.log(`Key: ${key}, Value: ${value}`);
+        db.query(sql2, (err, results) => {
+            if (err) {
+                console.error("Failed to get responseId", err);
+                return callback(err, null);
+            }
+            callback(null, results[0].id);  // Pass the result to the callback
+        });
+    }
+    
+    getResponseId((err, responseId) => {
+        if (err) {
+            return res.status(500).json({ error: "Failed to get responseId" });
+        }
+        // console.log(responseId);  // Now this will log after the query finishes
+        for (const key in z) {
+            if (z.hasOwnProperty(key)) {
+                if (key == "surveyId") { console.log("suceessfull survey form fill"); res.redirect('/survey'); return;} else {
+                    const value = z[key];
+                    // Do something with key and value
+                    // console.log(`Key: ${key}, Value: ${value}`);
+    
+                    const sql = "INSERT INTO responce_answers (response_id, question_id, answer_text) VALUES (?, ?, ?)";
+                    db.query(sql, [responseId, parseInt(key), value], (err) => {
+                        if (err) {
+                            console.error("Failed to submit answers:", err);
+                            return res.status(500).json({ error: "Failed to submit answers" });
+                        }
+                    });
+                }
             }
         }
-    }
-
-    console.log("inputing into database responces");
-    const sql = "INSERT INTO survey_responses (survey_id, respondor, res_phone, res_major, surveyor_id) VALUES (?, ?, ?, ?, ?)";
-    db.query(sql, [all.surveyId, all.name, all.major, all.year, 1], (err) => {
-    if (err) {
-        console.error("Failed to submit survey answers:", err);
-        return res.status(500).json({ error: "Failed to submit survey answers" });
-    }
-    res.redirect('/PrayerWall');
     });
+
+    
+    
 });
 
 router.get('/surveyCreate', (req, res) => {
