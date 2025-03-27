@@ -15,8 +15,14 @@ const upload = multer({ storage });
 
 
 if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
+
 router.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 router.get('/PrayerWall', (req, res) => {
+  if (req.session.user == null) {
+    res.redirect('/login');
+    return;
+  } 
+
   const sql = `
     SELECT prayer_wall.*, users.username 
     FROM prayer_wall 

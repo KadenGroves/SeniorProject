@@ -23,6 +23,11 @@ const { JSDOM } = jsdom;
 
 
 router.get('/survey', (req, res) => {
+    if (req.session.user == null) {
+        res.redirect('/login');
+        return;
+    }
+
     const sql = `
         SELECT surveys.*, survey_questions.*, question_choices.*,
         COALESCE(question_choices.question_id, survey_questions.id) AS question_id
