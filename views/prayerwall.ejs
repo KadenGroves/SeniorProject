@@ -47,43 +47,45 @@
     <p>Welcome to the Prayer Wall page.</p>
 
     <!-- Toggle Prayer Request Form Button -->
-    <button
-      id="togglePrayerForm"
-      style="background-color: #2d572c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;"
-    >
-      Pin A Prayer
-    </button>
-
-    <!-- Prayer Request Form (Hidden by Default) -->
-    <div id="prayerFormContainer" class="form-container" style="display: none;">
-      <h2>Submit a Prayer Request</h2>
-      <form action="/PrayerWall" method="POST" enctype="multipart/form-data" class="prayer-form">
-        <div class="form-group">
-          <label for="title" class="form-label">Title:</label>
-          <div class="input-box">
-            <input type="text" id="title" name="title" required class="form-input" />
-          </div>
+    <button id="togglePrayerForm"
+    style="background-color: #2d572c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">
+    Pin A Prayer
+  </button>
+  
+  <!-- Prayer Request Form (Hidden by Default) -->
+  <div
+    id="prayerFormContainer"
+    class="form-container"
+    style="display: none; background-color: #f8f8f8; padding: 20px; border-radius: 8px; margin-bottom: 20px;"
+  >
+    <h2>Submit a Prayer Request</h2>
+    <form action="/PrayerWall" method="POST" enctype="multipart/form-data" class="prayer-form">
+      <div class="form-group">
+        <label for="title" class="form-label">Title:</label>
+        <div class="input-box">
+          <input type="text" id="title" name="title" required class="form-input" />
         </div>
-    
-        <div class="form-group">
-          <label for="description" class="form-label">Description:</label>
-          <div class="input-box">
-            <textarea id="description" name="description" rows="4" required class="form-input"></textarea>
-          </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="description" class="form-label">Description:</label>
+        <div class="input-box">
+          <textarea id="description" name="description" rows="4" required class="form-input"></textarea>
         </div>
-    
-        <div class="form-group">
-          <label for="image" class="form-label">Optional Image:</label>
-          <div class="input-box">
-            <input type="file" id="image" name="image" accept="image/*" class="form-input" />
-          </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="image" class="form-label">Optional Image:</label>
+        <div class="input-box">
+          <input type="file" id="image" name="image" accept="image/*" class="form-input" />
         </div>
-    
-        <button type="submit" class="btn submit-btn">
-          Submit Prayer Request
-        </button>
-      </form>
-    </div>
+      </div>
+  
+      <button type="submit" class="btn submit-btn" style="background-color: #2d572c; color: white;">
+        Submit Prayer Request
+      </button>
+    </form>
+  </div>
 
 
     <!-- Display Prayer Requests -->
@@ -118,18 +120,17 @@
 
   <script>
     document.getElementById("togglePrayerForm").addEventListener("click", () => {
-      const formContainer = document.getElementById("prayerFormContainer");
-      const button = document.getElementById("togglePrayerForm");
+    const formContainer = document.getElementById("prayerFormContainer");
+    const button = document.getElementById("togglePrayerForm");
 
-      // Toggle form visibility
-      if (formContainer.style.display === "none" || formContainer.style.display === "") {
-        formContainer.style.display = "block";
-        button.innerText = "Close Pin A Prayer";
-      } else {
-        formContainer.style.display = "none";
-        button.innerText = "Pin A Prayer";
-      }
-    });
+    if (formContainer.style.display === "none" || formContainer.style.display === "") {
+      formContainer.style.display = "block";
+      button.innerText = "Close Pin A Prayer";
+    } else {
+      formContainer.style.display = "none";
+      button.innerText = "Pin A Prayer";
+    }
+  });
   </script>
 </body>
 </html>
