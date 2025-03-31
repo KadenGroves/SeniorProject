@@ -45,7 +45,12 @@
     <p>Welcome to the Survey page.</p>
     
     <br>
-    <a class="button" href="/surveyCreate"><img class="icon" src="/Icons/svgs/solid/plus.svg"> Create a survey </a>
+    <% if (user && user.role === 'staff' || user.role === 'studentleader' || user.role === 'admin') { %>
+        <% if (user && user.role === 'admin' || user.role === 'staff') { %>
+            <a class="btn link-button" href="/surveyCreate"><img class="icon" src="/Icons/svgs/solid/plus.svg"> Edit Survey</a>
+        <% } %>
+        <a class="btn link-button" href="/surveyCards"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey Cards</a>
+    <% } %>
     <br>
     <br>
     <br>
@@ -71,6 +76,9 @@
                         <br>
                         <label for="year">Year</label>
                         <input id="year" name="year" type="text">
+                        <br>
+                        <label for="phone">Phone</label>
+                        <input id="phone" name="phone" type="text">
                     </div>
                 <% } %> 
                 

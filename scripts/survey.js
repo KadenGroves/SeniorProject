@@ -48,9 +48,9 @@ router.post('/surveyForm', (req, res) => {
     const z = req.body;
     // console.log(z);
 
-    // console.log("inputing into database responces");
-    const sql = "INSERT INTO survey_responses (survey_id, respondor, res_phone, res_major, surveyor_id) VALUES (?, ?, ?, ?, ?)";
-    db.query(sql, [z.surveyId, z.name, z.major, z.year, 1], (err) => {
+    // console.log("inputing into database responses");
+    const sql = "INSERT INTO survey_responses (survey_id, responder, res_phone, res_year, res_major, surveyor_id) VALUES (?, ?, ?, ?, ?, ?)";
+    db.query(sql, [z.surveyId, z.name, z.phone, z.year, z.major, 1], (err) => {
         if (err) {
             console.error("Failed to submit survey answers:", err);
             return res.status(500).json({ error: "Failed to submit survey answers" });
@@ -84,7 +84,7 @@ router.post('/surveyForm', (req, res) => {
                     // Do something with key and value
                     // console.log(`Key: ${key}, Value: ${value}`);
     
-                    const sql = "INSERT INTO responce_answers (response_id, question_id, answer_text) VALUES (?, ?, ?)";
+                    const sql = "INSERT INTO response_answers (response_id, question_id, answer_text) VALUES (?, ?, ?)";
                     db.query(sql, [responseId, parseInt(key), value], (err) => {
                         if (err) {
                             console.error("Failed to submit answers:", err);
@@ -116,4 +116,21 @@ router.get('/surveyCreate', (req, res) => {
     });
 });
 
+router.get('/surveyCards', (req, res) => {
+    const sql = `
+        SELECT survey_responses.*, survey_questions.*, response_answers.*
+        FROM response_answers
+        JOIN survey_responses ON response_answers.response_id = survey_responses.id
+        JOIN survey_questions ON response_answers.question_id = survey_questions.id
+        ORDER BY submitted_at DESC;`
+    db.query(sql, (err, results) => {
+        if (err) {
+        console.error("Failed to retrieve data:", err);
+        return res.status(500).json({ error: "Failed to retrieve data" });
+        }
+        res.render('surveyCards', { cards : results });
+    });
+});
+
 module.exports = router;
+

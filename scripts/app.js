@@ -113,6 +113,10 @@ app.get('/surveyCreate', (req, res) => {
   res.render('surveyCreate.ejs', {user: req.session.user || null});
 });
 
+app.get('/surveyCards', (req, res) => {
+  res.render('surveyCards.ejs', {user: req.session.user || null});
+});
+
 app.get('/landing', (req, res) => {
   res.render('landing.ejs', {user: req.session.user || null});
 });
