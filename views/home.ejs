@@ -52,8 +52,6 @@
                     <p><strong>Description:</strong> <%= nextEvent.description %></p>
                 <% } %>
                 <p><strong> <%= new Date(nextEvent.event_date).toLocaleString() %><strong></p>
-                <!-- Debug: Show image URL -->
-                <p style="color: gray; font-size: 0.85em;"><%= nextEvent.image_url %></p>
             <% } else { %>
                 <p>No upcoming events.</p>
             <% } %>
