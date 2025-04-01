@@ -47,7 +47,7 @@ app.set('view engine', 'ejs');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, '../public')));
-
+app.use('/uploads/eventImages', express.static(path.join(__dirname, 'scripts/uploads/eventImages')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 

@@ -51,7 +51,7 @@
 
     <div id="eventFormContainer"
       style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; margin-bottom: 20px;">
-      <form action="/calendar" method="POST" style="padding-top: 10px;">
+      <form action="/calendar" method="POST" enctype="multipart/form-data" style="padding-top: 10px;">
         <label>Title:</label><br>
         <input type="text" name="title" required><br><br>
 
@@ -60,6 +60,9 @@
 
         <label>Description:</label><br>
         <textarea name="description" rows="3"></textarea><br><br>
+
+        <label>Event Image (optional):</label><br>
+        <input type="file" name="image" accept="image/*"><br><br>
 
         <button type="submit">Add Event</button>
       </form>
@@ -92,6 +95,7 @@
             <div class="event"
               data-title="<%= event.title %>"
               data-description="<%= event.description || 'No description.' %>"
+              data-image="<%= event.image_url || '' %>"
               onclick="handleEventClick(this)">
               <%= event.title %>
             </div>
@@ -107,6 +111,7 @@
       <span class="close" onclick="closeModal()">&times;</span>
       <h2 id="modalTitle"></h2>
       <p id="modalDescription"></p>
+      <img id="modalImage" src="" alt="Event Image" style="max-width: 100%; margin-top: 10px; display: none;" />
     </div>
   </div>
 
@@ -130,9 +135,19 @@
     function handleEventClick(el) {
       const title = el.getAttribute('data-title');
       const description = el.getAttribute('data-description');
+      const image = el.getAttribute('data-image');
 
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalDescription').innerText = description;
+
+      const modalImage = document.getElementById('modalImage');
+      if (image) {
+        modalImage.src = image;
+        modalImage.style.display = 'block';
+      } else {
+        modalImage.style.display = 'none';
+      }
+
       document.getElementById('eventModal').style.display = 'block';
     }
 

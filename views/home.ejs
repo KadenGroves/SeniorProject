@@ -39,6 +39,26 @@
     <h1>Home</h1>
     <p>Welcome to the Home page.</p>
 
+        <!--Upcoming Events -->
+        <div class="verse-container">
+            <div class="verse-header">Upcoming Event</div>
+            <% if (nextEvent) { %>
+                <% if (nextEvent.image_url) { %>
+                    <img src="<%= nextEvent.image_url %>" alt="Event Image"
+                         style="max-width: 100%; max-height: 300px; border-radius: 10px; margin-bottom: 10px;" />
+                <% } %>
+                <p><strong>Title:</strong> <%= nextEvent.title %></p>
+                <% if (nextEvent.description) { %>
+                    <p><strong>Description:</strong> <%= nextEvent.description %></p>
+                <% } %>
+                <p><strong> <%= new Date(nextEvent.event_date).toLocaleString() %><strong></p>
+                <!-- Debug: Show image URL -->
+                <p style="color: gray; font-size: 0.85em;"><%= nextEvent.image_url %></p>
+            <% } else { %>
+                <p>No upcoming events.</p>
+            <% } %>
+        </div>
+
         <!-- Bible Verse Container -->
         <div class="verse-container">
         <div class="verse-header">Verse For You</div>

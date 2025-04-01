@@ -1,19 +1,28 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 
-// Utilities to get days in month
+// ✅ Define the helper function BEFORE using it
 function getDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate();
 }
 
-// Render calendar page
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads/eventImages/"),
+  filename: (req, file, cb) => cb(null, req.session.user.id + '-' + Date.now() + path.extname(file.originalname))
+});
+const upload = multer({ storage });
+
+// GET calendar page
 router.get('/calendar', (req, res) => {
   if (!req.session.user) return res.redirect('/login');
 
   const now = new Date();
   const year = parseInt(req.query.year) || now.getFullYear();
-  const month = parseInt(req.query.month) || now.getMonth(); // 0 = Jan
+  const month = parseInt(req.query.month) || now.getMonth();
 
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
@@ -29,8 +38,9 @@ router.get('/calendar', (req, res) => {
       return res.status(500).send("Error loading events");
     }
 
+    // ✅ This now works because getDaysInMonth is already defined
     const daysInMonth = getDaysInMonth(year, month);
-    const firstWeekday = firstDay.getDay(); // 0 = Sunday
+    const firstWeekday = firstDay.getDay();
 
     res.render('calendar', {
       user: req.session.user,
@@ -43,7 +53,8 @@ router.get('/calendar', (req, res) => {
   });
 });
 
-router.post('/calendar', (req, res) => {
+// POST to add a calendar event
+router.post('/calendar', upload.single('image'), (req, res) => {
   const { title, description, event_date } = req.body;
   const user = req.session.user;
 
@@ -51,14 +62,15 @@ router.post('/calendar', (req, res) => {
     return res.status(400).send("Missing required fields");
   }
 
-  const sql = `INSERT INTO calendar_events (title, description, event_date, created_by) VALUES (?, ?, ?, ?)`;
-  db.query(sql, [title, description, event_date, user.id], (err) => {
+  const image_url = req.file ? `/uploads/eventImages/${req.file.filename}` : null;
+
+  const sql = `INSERT INTO calendar_events (title, description, event_date, created_by, image_url) VALUES (?, ?, ?, ?, ?)`;
+  db.query(sql, [title, description, event_date, user.id, image_url], (err) => {
     if (err) {
       console.error("Insert error:", err);
       return res.status(500).send("Error saving event");
     }
 
-    // Redirect to the correct month/year
     const date = new Date(event_date);
     res.redirect(`/calendar?month=${date.getMonth()}&year=${date.getFullYear()}`);
   });

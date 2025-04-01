@@ -1,6 +1,12 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const db = require('./db');
+
+
+
+
+
 
 //--------------------verse searcher -------------------------
 router.get('/api/verse-search', async (req, res) => {
@@ -278,15 +284,36 @@ const allowedVerses = [
     }
   }
   
-  // Profile Route
-  router.get('/', async (req, res) => {
+  
+  router.get('/', async (req, res, next) => {
     try {
       const verse = await getRandomBibleVerse();
-      res.render('home', { verse });
+      const now = new Date();
+  
+      const sql = `
+        SELECT * FROM calendar_events
+        WHERE event_date >= ?
+        ORDER BY event_date ASC
+        LIMIT 1
+      `;
+  
+      db.query(sql, [now], (err, result) => {
+        if (err) {
+          console.error("DB error:", err);
+          return next(err);
+        }
+  
+        const nextEvent = result[0] || null;
+  
+        res.render('home', {
+          user: req.session.user,
+          verse,
+          nextEvent
+        });
+      });
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch Bible verse." });
+      next(error);
     }
   });
-
-
-module.exports = router;
+  
+  module.exports = router;
