@@ -5,7 +5,6 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 
-// ✅ Define the helper function BEFORE using it
 function getDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate();
 }
@@ -16,7 +15,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// GET calendar page
+
 router.get('/calendar', (req, res) => {
   if (!req.session.user) return res.redirect('/login');
 
@@ -38,7 +37,7 @@ router.get('/calendar', (req, res) => {
       return res.status(500).send("Error loading events");
     }
 
-    // ✅ This now works because getDaysInMonth is already defined
+    
     const daysInMonth = getDaysInMonth(year, month);
     const firstWeekday = firstDay.getDay();
 
