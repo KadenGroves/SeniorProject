@@ -140,6 +140,7 @@
 
                 <% if (Q.question_type == "short") { %>
                     <div class="question">
+                        <img class="icon xmark" src="/Icons/svgs/solid/xmark.svg" onclick="deleteQuestion(`<%= Q.question_id %>`)">
                         <h3><%= Q.question_text %></h3>
                         <div class="input-box">
                             <input id="<%= Q.question_id %>" name="<%= Q.question_id %>" type="text">
@@ -147,6 +148,7 @@
                     </div>
                 <% } else if (Q.question_type == "long") { %>
                     <div class="question">
+                        <img class="icon xmark" src="/Icons/svgs/solid/xmark.svg" onclick="deleteQuestion(`<%= Q.question_id %>`)">
                         <h3><%= Q.question_text %></h3>
                         <div class="input-box">
                             <textarea id="<%= Q.question_id %>" name="<%= Q.question_id %>" rows="3" class="form-input"></textarea>
@@ -154,6 +156,7 @@
                     </div>
                 <% } else if (Q.question_type == "bubble") { %>
                     <div class="question">
+                        <img class="icon xmark" src="/Icons/svgs/solid/xmark.svg" onclick="deleteQuestion(`<%= Q.question_id %>`)">
                         <h3><%= Q.question_text %></h3>
                         <div class="input-box">
                             <% array.forEach(c => { %>
@@ -164,6 +167,7 @@
                     </div>
                 <% } else if (Q.question_type == "checkBox") { %>
                     <div class="question">
+                        <img class="icon xmark" src="/Icons/svgs/solid/xmark.svg" onclick="deleteQuestion(`<%= Q.question_id %>`)">
                         <h3><%= Q.question_text %></h3>
                         <div class="input-box">
                             <% array.forEach(c => { %>

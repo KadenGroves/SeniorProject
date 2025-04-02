@@ -10,6 +10,19 @@ const { JSDOM } = jsdom;
 
 let SURVEYID;
 
+function deleteQuestion(qId) {
+    const sql = `
+        DELETE FROM survey_questions
+        WHERE id = ${qId}; `
+    db.query(sql, (err, results) => {
+        if (err) {
+        console.error("Failed to retrieve data:", err);
+        return res.status(500).json({ error: "Failed to retrieve data" });
+        }
+        res.render('surveyCreate', { surveys : results });
+    });
+}
+
 router.get('/survey', (req, res) => {
     if (req.session.user == null) {
         res.redirect('/login');
