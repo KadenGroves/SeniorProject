@@ -56,7 +56,7 @@ const prayerWallRoutes = require('./prayerWall');
 const bibleRoutes = require('./bible');
 const adminPanelRoutes = require('./adminPanel');
 const surveyRoutes = require('./survey');
-const surveyCreateRoutes = require('./surveyCreate');
+// const surveyCreateRoutes = require('./surveyCreate');
 const profileRoutes = require('./profile');
 const chatRoutes = require('./chat');
 const calendarRoutes = require('./calendar');
@@ -113,6 +113,10 @@ app.get('/survey', (req, res) => {
 
 app.get('/surveyCreate', (req, res) => {
   res.render('surveyCreate.ejs', {user: req.session.user || null});
+});
+
+app.get('/surveyCards', (req, res) => {
+  res.render('surveyCards.ejs', {user: req.session.user || null});
 });
 
 app.get('/landing', (req, res) => {

@@ -45,77 +45,101 @@
     <p>Welcome to the Survey page.</p>
     
     <br>
-    <a class="button" href="/surveyCreate"><img class="icon" src="/Icons/svgs/solid/plus.svg"> Create a survey </a>
+    <% if (user && user.role === 'staff' || user.role === 'studentleader' || user.role === 'admin') { %>
+        <% if (user && user.role === 'admin' || user.role === 'staff') { %>
+            <a class="btn link-button" href="/surveyCreate"><img class="icon" src="/Icons/svgs/solid/plus.svg"> Edit Survey</a>
+        <% } %>
+        <a class="btn link-button" href="/surveyCards"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey Cards</a>
+    <% } %>
     <br>
     <br>
     <br>
 
     <div>
         <!-- Checking if surveys and survey_questions have data to display -->
-        <% if (surveys && surveys.length > 0 && survey_questions.length > 0) { %>
-            <h1><%= surveys.title %></h1>
+        <% if (surveys && surveys.length > 0) { %>
             <!-- Every question is generated here. There are 4 types -->
-            <% survey_questions.forEach(q => { %>
-                <% if (q.question_type == "short") { %>
-                    <div class="question">
-                        <h3><%= q.question_text %></h3>
-                        <input id="<%= q.id %>" type="text">
+            <% let array = []; let resetArray = false;%>
+            <% surveys.forEach((Q, index, arr) => { %>
+
+                <% if (index == 0) { %>
+                    <% // console.log(Q); %>
+                    <form action="surveyForm" method="POST">
+                    <input type="text" name="surveyId" value="<%= Q.survey_id %>" hidden>
+                    <h1><%= surveys[0].title %></h1>
+                    <div id="personsInfo">
+                        <label for="name">Name</label>
+                        <input id="name" name="name" type="text">
+                        <br>
+                        <label for="major">Major</label>
+                        <input id="major"  name="major" type="text">
+                        <br>
+                        <label for="year">Year</label>
+                        <input id="year" name="year" type="text">
+                        <br>
+                        <label for="phone">Phone</label>
+                        <input id="phone" name="phone" type="text">
                     </div>
-                <% } else if (question.question_type == "long") { %>
+                <% } %> 
+                
+                <% if (index < arr.length - 1 && arr[index+1].question_id == Q.question_id) {
+                    array.push(Q.choice);
+                    return;
+                } else if (index != 0 && arr[index-1].question_id == Q.question_id) {
+                    array.push(Q.choice);
+                    resetArray = true;
+                } %>
+                
+
+                <% if (Q.question_type == "short") { %>
                     <div class="question">
-                        <h3><%= q.question_text %></h3>
-                        <textarea id="<%= q.id %>" name="description" rows="3" class="form-input"></textarea>
+                        <h3><%= Q.question_text %></h3>
+                        <div class="input-box">
+                            <input id="<%= Q.question_id %>" name="<%= Q.question_id %>" type="text">
+                        </div>
                     </div>
-                <% } else if (question.question_type == "bubble") { %>
+                <% } else if (Q.question_type == "long") { %>
                     <div class="question">
-                        <h3><%= q.question_text %></h3>
-                        <% q.qestion_choices.forEach(c => { %>
-                            <input type="radio" id="<%= c.choice %>" value="<%= c.choice %>"/>
-                            <label for="<%= c.choice %>"><%= c.choice %></label>
-                        <% }); %>
+                        <h3><%= Q.question_text %></h3>
+                        <div class="input-box">
+                            <textarea id="<%= Q.question_id %>" name="<%= Q.question_id %>" rows="3" class="form-input"></textarea>
+                        </div>
                     </div>
-                <% } else if (question.question_type == "checkbox") { %>
+                <% } else if (Q.question_type == "bubble") { %>
                     <div class="question">
-                        <% q.qestion_choices.forEach(c => { %>
-                            <h3><%= q.question_text %></h3>
-                            <input id="<%= c.choice %>" type="checkbox">
-                            <label for="<%= c.choice %>"><%= c.choice %></label>
-                        <% }); %>
+                        <h3><%= Q.question_text %></h3>
+                        <div class="input-box">
+                            <% array.forEach(c => { %>
+                            <input id="<%= c %>"  type="radio" name="<%= Q.question_id %>" value="<%= c %>"/>
+                            <label for="<%= c %>"><%= c %></label>
+                            <% }); %>
+                        </div>
+                    </div>
+                <% } else if (Q.question_type == "checkBox") { %>
+                    <div class="question">
+                        <h3><%= Q.question_text %></h3>
+                        <div class="input-box">
+                            <% array.forEach(c => { %>
+                            <input id="<%= c %>" name="<%= Q.question_id %>" type="checkbox">
+                            <label for="<%= c %>"><%= c %></label>
+                            <% }); %>
+                        </div>
                     </div>
                 <% } %>
+
+                <% if (resetArray) { array = []; resetArray = false; } %>
+                <% if (index == arr.length - 1) { %>
+                    <br>
+                    <button type="submit" class="btn submit-btn">
+                        Submit
+                    </button>
+                    </form>
+                <% } %>
+                
             <% }); %>
-        <% } %>
+        <% } %> 
     </div>
 
-
-    <form>
-        <h1>Survey Name</h1>
-
-        <div class="question">
-            <h3>Question 1</h3>
-            <input type="text">
-        </div>
-
-        <div class="question">
-            <h3>Question 2</h3>
-            <input type="radio" id="huey" name="drone" value="huey"/>
-            <label for="huey">Huey</label>
-            <input type="radio" id="loui" name="drone" value="loui"/>
-            <label for="huey">Loui</label>
-            <input type="radio" id="Fooey" name="drone" value="Fooey"/>
-            <label for="huey">Fooey</label>
-        </div>
-
-        <div class="question">
-            <h3>Question 3</h3>
-            <input id="q3.1" type="checkbox">
-            <label for="q3.1">1</label>
-            <input id="q3.2" type="checkbox">
-            <label for="q3.2">2</label>
-            <input id="q3.3" type="checkbox">
-            <label for="q3.3">3</label>
-        </div>
-    </form>
-
+    <br>
 </body>
 </html>
