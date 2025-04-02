@@ -59,6 +59,7 @@ const surveyRoutes = require('./survey');
 // const surveyCreateRoutes = require('./surveyCreate');
 const profileRoutes = require('./profile');
 const chatRoutes = require('./chat');
+const calendarRoutes = require('./calendar');
 
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null; 
@@ -75,6 +76,7 @@ app.use(profileRoutes);
 app.use(surveyRoutes);
 // app.use(surveyCreateRoutes);
 app.use(chatRoutes)
+app.use(calendarRoutes);
 
 app.get('/', (req, res) => {
   console.log(req.session.user.id);

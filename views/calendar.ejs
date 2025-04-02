@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events</title>
@@ -9,8 +10,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="/stylesheets/styles.css">
+=======
+  <meta charset="UTF-8" />
+  <title>Event Calendar</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css" />
+>>>>>>> main
 </head>
+
 <body>
+<<<<<<< HEAD
     <nav>
         <div id="currentUser">
             <% if (user && user.profile_picture) { %>
@@ -40,43 +48,228 @@
         <input type="text" id="title" placeholder="Event Title" required>
         <textarea id="description" placeholder="Event Description" required></textarea>
         <input type="datetime-local" id="event_date" required>
+=======
+
+  <% const monthNames = ["January", "February", "March", "April", "May", "June", 
+                         "July", "August", "September", "October", "November", "December"]; %>
+
+  <nav>
+    <div id="currentUser">
+      <% if (user && user.profile_picture) { %>
+          <img src="<%= user.profile_picture %>" alt="User Img">
+          <h3><%= user.username %></h3>
+      <% } else { %>
+          <img src="/uploads/default-profile.png" alt="User Img">
+          <h3>Guest</h3>
+      <% } %>
+    </div>
+
+    <div id="navButtons">
+      <a class="button" id="currentPageButton" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
+      <a class="button" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg"> Profile</a>
+      <a class="button" href="/survey"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey</a>
+      <a class="button" href="/prayerwall"><img class="icon" src="/Icons/svgs/solid/thumbtack.svg"> Prayer Wall</a>
+      <a class="button" href="/chat"><img class="icon" src="/Icons/svgs/solid/comment.svg"> Chat</a>
+      <a class="button" href="/calendar"><img class="icon" src="/Icons/svgs/solid/calendar.svg"> Calendar</a>
+      <% if (user && user.role === 'admin') { %>
+        <a class="button" href="/adminPanel">adminPanel</a>
+      <% } %>
+      <a class="button" href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <main style="max-width: 800px; margin: 0 auto;">
+    <h1><%= monthNames[month] %> <%= year %></h1>
+
+    <div class="month-nav">
+      <a href="/calendar?month=<%= month - 1 < 0 ? 11 : month - 1 %>&year=<%= month - 1 < 0 ? year - 1 : year %>">← Previous</a>
+      <a href="/calendar?month=<%= month + 1 > 11 ? 0 : month + 1 %>&year=<%= month + 1 > 11 ? year + 1 : year %>">Next →</a>
+    </div>
+
+    <button id="toggleEventForm"
+      style="background-color: #2d572c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">
+      Pin A Prayer
+    </button>
+
+    <div id="eventFormContainer"
+      style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; margin-bottom: 20px;">
+      <form action="/calendar" method="POST" style="padding-top: 10px;">
+        <label>Title:</label><br>
+        <input type="text" name="title" required><br><br>
+
+        <label>Date & Time:</label><br>
+        <input type="datetime-local" name="event_date" required><br><br>
+
+        <label>Description:</label><br>
+        <textarea name="description" rows="3"></textarea><br><br>
+
+>>>>>>> main
         <button type="submit">Add Event</button>
-    </form>
-    <div id="eventsList"></div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchEvents();
-        });
+      </form>
+    </div>
 
-        document.getElementById('eventForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const title = document.getElementById('title').value;
-            const description = document.getElementById('description').value;
-            const event_date = document.getElementById('event_date').value;
-            const created_by = 1; // Replace with logged-in user ID
+    <!-- Day Headers -->
+    <div class="day-names">
+      <div>Sun</div>
+      <div>Mon</div>
+      <div>Tue</div>
+      <div>Wed</div>
+      <div>Thu</div>
+      <div>Fri</div>
+      <div>Sat</div>
+    </div>
 
-            const response = await fetch('/api/events', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, description, event_date, created_by })
-            });
-            const data = await response.json();
-            alert(data.message);
-            fetchEvents();
-        });
+    <!-- Calendar Grid -->
+    <div class="calendar-grid">
+      <% for (let i = 0; i < firstWeekday; i++) { %>
+        <div class="day-cell" style="background: #eee;"></div>
+      <% } %>
 
-        async function fetchEvents() {
-            const response = await fetch('/api/events');
-            const events = await response.json();
-            const eventsList = document.getElementById('eventsList');
-            eventsList.innerHTML = events.map(event => `
-                <div>
-                    <h3>${event.title}</h3>
-                    <p>${event.description}</p>
-                    <p><strong>Date:</strong> ${new Date(event.event_date).toLocaleString()}</p>
-                </div>
-            `).join('');
-        }
-    </script>
+      <% for (let day = 1; day <= daysInMonth; day++) { 
+        const currentDate = new Date(year, month, day).toISOString().slice(0, 10);
+        const eventsToday = events.filter(e => e.event_date.toISOString().startsWith(currentDate));
+      %>
+        <div class="day-cell">
+          <div class="day-number"><%= day %></div>
+          <% eventsToday.forEach(event => { %>
+            <div class="event"
+              data-title="<%= event.title %>"
+              data-description="<%= event.description || 'No description.' %>"
+              onclick="handleEventClick(this)">
+              <%= event.title %>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+  </main>
+
+  <!-- Modal for Event Description -->
+  <div id="eventModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalDescription"></p>
+    </div>
+  </div>
+
+  <script>
+    const toggleButton = document.getElementById("toggleEventForm");
+    const formContainer = document.getElementById("eventFormContainer");
+    let formOpen = false;
+
+    toggleButton.addEventListener("click", () => {
+      formOpen = !formOpen;
+
+      if (formOpen) {
+        formContainer.style.maxHeight = formContainer.scrollHeight + "px";
+        toggleButton.innerText = "Close Event Form";
+      } else {
+        formContainer.style.maxHeight = "0";
+        toggleButton.innerText = "Add New Event";
+      }
+    });
+
+    function handleEventClick(el) {
+      const title = el.getAttribute('data-title');
+      const description = el.getAttribute('data-description');
+
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalDescription').innerText = description;
+      document.getElementById('eventModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('eventModal').style.display = 'none';
+    }
+
+    window.onclick = function (event) {
+      const modal = document.getElementById('eventModal');
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
+
+  <style>
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: #ccc;
+    }
+
+    .day-cell {
+      min-height: 120px;
+      background: white;
+      padding: 5px;
+      font-size: 0.9em;
+      position: relative;
+    }
+
+    .day-number {
+      font-weight: bold;
+    }
+
+    .event {
+      background-color: #2d572c;
+      color: white;
+      padding: 2px 4px;
+      border-radius: 4px;
+      margin-top: 4px;
+      font-size: 0.85em;
+      cursor: pointer;
+    }
+
+    .day-names {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .month-nav {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px auto;
+      max-width: 800px;
+    }
+
+    .modal {
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+  </style>
 </body>
 </html>
