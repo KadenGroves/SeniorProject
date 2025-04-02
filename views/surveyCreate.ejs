@@ -52,28 +52,55 @@
     <!-- Prayer Request Form (Hidden by Default) -->
     <div class="add-question">
         <h1>Add Question:</h1>
-        <button class="btn add-button" id="add-short" onclick="textQuestion">Short</button>
-        <button class="btn add-button" id="add-long" onclick="longQuestion">Long</button>
-        <button class="btn add-button" id="add-select" onclick="selectQuestion">Select</button>
+        <button class="btn add-button" id="add-short" onclick="shortQuestion()">Short</button>
+        <button class="btn add-button" id="add-long" onclick="longQuestion()">Long</button>
+        <button class="btn add-button" id="add-select" onclick="selectQuestion()">Select</button>
         <!-- <button class="btn add-button" id="add-check">Check</button> -->
     </div>
 
     <div class="addQuestionForm"> 
-        <form id="short" style="display: none;">
+        <form id="short" style="display: none;" action="addQuestion" method="POST">
+            <input type="text" name="surveyId" value="<%= surveys[0].survey_id %>" hidden>
+            <input type="text" name="type" value="short" hidden>
             <label for="text">Type 'short-answer' question here: </label><br>
             <textarea name="text" id="text"></textarea><br>
             <button class="btn">Add Question</button>
         </form>
-        <form id="long" style="display: none;">
+        <form id="long" style="display: none;" action="addQuestion" method="POST">
+            <input type="text" name="surveyId" value="<%= surveys[0].survey_id %>" hidden>
+            <input type="text" name="type" value="long" hidden>
             <label for="text">Type 'long-answer' question here: </label><br>
             <textarea name="text" id="text"></textarea><br>
             <button class="btn">Add Question</button>
         </form>
-        <form id="select" style="display: none;">
+        <form id="select" style="display: none;" action="addQuestion" method="POST">
+            <input type="text" name="surveyId" value="<%= surveys[0].survey_id %>" hidden>
+            <input type="text" name="type" value="bubble" hidden>
             <label for="text">Type 'select-answer' question here: </label><br>
-            <label for="numberOfChoices">How many choices will there be?</label>
-            <input type="">
             <textarea name="text" id="text"></textarea><br>
+            <br>
+
+            <p>How many choices will there be?</p><br>
+            <select id="numberOfChoices" onchange="myFunction();" >
+                <!-- <option value="1">1</option> -->
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+            </select>
+
+            <br><br>
+
+            <div id="options">
+                <label for="option1">option1: </label>
+                <input name="option1" type="text"><br>
+                <label for="option2">option2: </label>
+                <input name="option2" type="text"><br>
+            </div>
+
+            <br><br>
+
             <button class="btn">Add Question</button>
         </form>
     </div>
@@ -155,20 +182,61 @@
             <% }); %>
         <% } %>
 
-
-        <script>
-            function ShortQuestion() {
-                document.getElementById("");
-            }
-
-            function textQuestion() {
-
-            }
-
-            function selectQuestion() {
-
-            }
-        </script>
+        
     </div>
+
+    <script>
+        let shortDiv = document.getElementById("short");
+        let longDiv = document.getElementById("long");
+        let selectDiv = document.getElementById("select");
+
+        function shortQuestion() {
+            shortDiv.style = "";
+            longDiv.style = "display: none;";
+            selectDiv.style = "display: none;";
+        }
+
+        function longQuestion() {
+            shortDiv.style = "display: none;";
+            longDiv.style = "";
+            selectDiv.style = "display: none;";
+        }
+
+        function selectQuestion() {
+            shortDiv.style = "display: none;";
+            longDiv.style = "display: none;";
+            selectDiv.style = "";
+        }
+
+        function myFunction() {
+            let optionBlock = document.getElementById("options");
+            optionBlock.innerHTML = "";
+            var ele = document.getElementById("numberOfChoices");
+            var selectedValue = ele.options[ele.selectedIndex].value;
+
+            let num = parseInt(selectedValue);
+
+            for (i = 1; i <= num; i++) {
+                optionBlock.innerHTML += `
+                    <label for="option${i}">option${i}: </label>
+                    <input name="option${i}" type="text"><br>
+                `;
+            }
+
+
+            // var y = document.getElementById("demo");
+            // if (selectedValue=="1"){
+            // num = parseInt(selectedValue);
+            // } else if(selectedValue=="2"){
+            // y.innerHTML = "hello 2";
+            // } else if(selectedValue=="3"){
+            // y.innerHTML = "hello 3";
+            // } else if(selectedValue=="4"){
+            // y.innerHTML = "hello 4";
+            // } else if(selectedValue=="5"){
+            // y.innerHTML = "hello 5";
+            // }
+        }
+    </script>
 </body>
 </html>
