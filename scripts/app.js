@@ -3,12 +3,11 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const db = require('./db');
-// const bcrypt = require('bcrypt');
-const app = express(); 
-
 const session = require('express-session');
 
+const app = express();
 
+// Session setup
 app.use(session({
   secret: process.env.SESSION_SECRET || 'mySecretKey',
   resave: false,
@@ -16,24 +15,18 @@ app.use(session({
   cookie: { secure: false }
 }));
 
-//makes user avaliable in all views
+// Middleware to set user data globally
 app.use((req, res, next) => {
   if (req.session.user) {
     const userId = req.session.user.id;
     db.query('SELECT username, profile_picture FROM users WHERE id = ?', [userId], (err, results) => {
-      if (err) {
-        console.error('Error fetching user data:', err);
-        return next();
-      }
-      
-      if (results.length > 0) {
+      if (err || results.length === 0) {
+        res.locals.user = null;
+      } else {
         req.session.user.username = results[0].username;
         req.session.user.profile_picture = results[0].profile_picture || '/uploads/default-profile.png';
-      } else {
-        req.session.user.profile_picture = '/uploads/default-profile.png';
+        res.locals.user = req.session.user;
       }
-      
-      res.locals.user = req.session.user;
       next();
     });
   } else {
@@ -42,86 +35,50 @@ app.use((req, res, next) => {
   }
 });
 
-app.set('view engine', 'ejs');
-
-
-app.use(express.static(path.join(__dirname, 'public')));
+// Corrected static paths
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/uploads/eventImages', express.static(path.join(__dirname, 'scripts/uploads/eventImages')));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-const loginRoutes = require('./login');
-const prayerWallRoutes = require('./prayerWall');
 const bibleRoutes = require('./bible');
-const adminPanelRoutes = require('./adminPanel');
+const loginRoutes = require('./login');
+const calendarRoutes = require('./calendar');
+const chatRoutes = require('./chat');
+const prayerWallRoutes = require('./prayerWall');
+const profileRoutes = require('./profile');
 const surveyRoutes = require('./survey');
 const surveyCreateRoutes = require('./surveyCreate');
-const profileRoutes = require('./profile');
-const chatRoutes = require('./chat');
-const calendarRoutes = require('./calendar');
 
-app.use((req, res, next) => {
-  res.locals.user = req.session.user || null; 
-  next();
-});
-
-
-app.use(loginRoutes);
-app.use(prayerWallRoutes);
 app.use(bibleRoutes);
-app.use(adminPanelRoutes);
-app.use(profileRoutes);
-// app.use(surveyRoutes);
-app.use(surveyRoutes);
-// app.use(surveyCreateRoutes);
-app.use(chatRoutes)
+app.use(loginRoutes);
 app.use(calendarRoutes);
+app.use(chatRoutes);
+app.use(prayerWallRoutes);
+app.use(profileRoutes);
+app.use(surveyRoutes);
 
-app.get('/', (req, res) => {
-  console.log(req.session.user.id);
-  res.render('home.ejs', {user: req.session.user || null});
+// Serve HTML files explicitly (improving clarity)
+// Corrected explicit HTML routes:
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../views/home.html')));
+app.get('/login', (req, res) => res.sendFile(path.join(__dirname, '../views/login.html')));
+app.get('/profile', (req, res) => res.sendFile(path.join(__dirname, '../views/profile.html')));
+app.get('/calendar', (req, res) => res.sendFile(path.join(__dirname, '../views/calendar.html')));
+app.get('/chat', (req, res) => res.sendFile(path.join(__dirname, '../views/chat.html')));
+app.get('/orgFinder', (req, res) => res.sendFile(path.join(__dirname, '../views/orgFinder.html')));
+app.get('/prayerWall', (req, res) => res.sendFile(path.join(__dirname, '../views/prayerwall.html')));
+app.get('/survey', (req, res) => res.sendFile(path.join(__dirname, '../views/survey.html')));
+app.get('/surveyCreate', (req, res) => res.sendFile(path.join(__dirname, '../views/surveyCreate.html')));
+app.get('/landing', (req, res) => res.sendFile(path.join(__dirname, '../views/landing.html')));
+app.get('/adminPanel', (req, res) => res.sendFile(path.join(__dirname, '../views/adminPanel.html')));
+
+
+// API endpoint for current user (testing purposes)
+app.get('/api/user', (req, res) => {
+  res.json(req.session.user || null);
 });
 
-app.get('/profile', (req, res) => {
-  res.render('profile.ejs', {user: req.session.user || null});
-});
-
-app.get('/calendar', (req, res) => {
-  res.render('calendar.ejs', {user: req.session.user || null});
-});
-
-app.get('/chat', (req, res) => {
-  res.render('chat.ejs', {user: req.session.user || null});
-});
-
-app.get('/login', (req, res) => {
-  res.render('login.ejs', {user: req.session.user || null});
-});
-
-app.get('/orgFinder', (req, res) => {
-  res.render('orgFinder.ejs', {user: req.session.user || null});
-});
-
-app.get('/prayerWall', (req, res) => {
-  res.render('prayerWall.ejs', {user: req.session.user || null});
-});
-
-app.get('/survey', (req, res) => {
-  res.render('survey.ejs', {user: req.session.user || null});
-});
-
-app.get('/surveyCreate', (req, res) => {
-  res.render('surveyCreate.ejs', {user: req.session.user || null});
-});
-
-app.get('/landing', (req, res) => {
-  res.render('landing.ejs', {user: req.session.user || null});
-});
-
-app.get('/adminPanel', (req, res) => {
-  res.render('adminPanel.ejs', {user: req.session.user || null});
-});
-
-const PORT = process.env.PORT || 3000; 
+// Listen
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/stylesheets/styles.css" />
+</head>
+<body>
+  <nav>
+    <div id="currentUser">
+      <img id="userImage" src="/uploads/default-profile.png" alt="User Img" />
+      <h3 id="username">Guest</h3>
+    </div>
+    <div id="navButtons">
+      <a class="button" id="currentPageButton" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg" /> Home</a>
+      <a class="button" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg" /> Profile</a>
+      <a class="button" href="/survey"><img class="icon" src="/Icons/svgs/solid/clipboard.svg" /> Survey</a>
+      <a class="button" href="/prayerwall"><img class="icon" src="/Icons/svgs/solid/thumbtack.svg" /> Prayer Wall</a>
+      <a class="button" href="/chat"><img class="icon" src="/Icons/svgs/solid/comment.svg" /> Chat</a>
+      <a class="button" href="/calendar"><img class="icon" src="/Icons/svgs/solid/calendar.svg" /> Calendar</a>
+      <a class="button" id="adminLink" href="/adminPanel" style="display:none;">Admin Panel</a>
+      <a class="button" href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <main>
+    <header>
+      <h1>Home</h1>
+      <p>Welcome to the Home page.</p>
+    </header>
+
+    <section class="verse-container">
+      <div class="verse-header">Upcoming Event</div>
+      <div id="eventInfo"><p>Loading upcoming event...</p></div>
+    </section>
+
+    <section class="verse-container">
+      <div class="verse-header">Verse For You</div>
+      <div id="verseOfDay"><p>Loading verse...</p></div>
+    </section>
+
+    <section class="verse-container">
+      <div class="verse-header">Search for a Bible Verse</div>
+      <form id="verseSearchForm">
+        <input type="text" id="verseQuery" placeholder="Enter keyword or book (e.g., John 3:16)" required style="width: 100%; padding: 10px; margin: 10px 0;" />
+        <button type="submit" style="background-color: #2d572c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Search</button>
+      </form>
+      <div id="verseResults" style="margin-top: 20px;"></div>
+    </section>
+  </main>
+
+  <script>
+    // Fetch user info
+    fetch('/api/user')
+      .then(res => res.json())
+      .then(user => {
+        if (user.username) {
+          document.getElementById('username').textContent = user.username;
+          document.getElementById('userImage').src = user.profile_picture || '/uploads/default-profile.png';
+          if (user.role === 'admin') {
+            document.getElementById('adminLink').style.display = 'inline-block';
+          }
+        }
+      });
+
+    // Fetch verse of the day
+    fetch('/api/verse-today')
+      .then(res => res.json())
+      .then(data => {
+        const verseBox = document.getElementById('verseOfDay');
+        verseBox.innerHTML = data.text ? `
+          <p class="verse-text">"${data.text}"</p>
+          <p class="verse-reference">— ${data.reference}</p>` : 
+          '<p>No verse available today.</p>';
+      });
+
+    // Fetch next event
+    fetch('/api/next-event')
+      .then(res => res.json())
+      .then(event => {
+        const eventBox = document.getElementById('eventInfo');
+        if (event && event.title) {
+          eventBox.innerHTML = `
+            ${event.image_url ? `<img src="${event.image_url}" style="max-width: 100%; max-height: 300px; border-radius: 10px; margin-bottom: 10px;" />` : ''}
+            <p><strong>Title:</strong> ${event.title}</p>
+            ${event.description ? `<p><strong>Description:</strong> ${event.description}</p>` : ''}
+            <p><strong>${new Date(event.event_date).toLocaleString()}</strong></p>`;
+        } else {
+          eventBox.innerHTML = '<p>No upcoming events.</p>';
+        }
+      });
+
+    // Bible verse search
+    document.getElementById("verseSearchForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const query = document.getElementById("verseQuery").value.trim();
+      if (!query) return alert("Please enter a search term.");
+
+      try {
+        const response = await fetch(`/api/verse-search?query=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        const resultsContainer = document.getElementById("verseResults");
+        resultsContainer.innerHTML = "";
+
+        if (data.error) {
+          resultsContainer.innerHTML = `<p style="color: red;">${data.error}</p>`;
+          return;
+        }
+
+        if (data.verses?.length) {
+          data.verses.forEach(verse => {
+            resultsContainer.innerHTML += `
+              <div class="card" style="margin: 10px 0; padding: 10px; border: 1px solid #8b9a8f; border-radius: 8px; background-color: #fff;">
+                <p style="font-size: 1.2em; font-style: italic;">"${verse.text}"</p>
+                <p style="font-weight: bold; color: #2d572c;">— ${verse.reference}</p>
+              </div>`;
+          });
+        } else {
+          resultsContainer.innerHTML = "<p>No results found for your search.</p>";
+        }
+      } catch (error) {
+        console.error("Failed to fetch search results:", error);
+        document.getElementById("verseResults").innerHTML = `<p style="color: red;">Failed to retrieve search results. Please try again later.</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
