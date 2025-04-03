@@ -50,33 +50,197 @@
     </button> -->
 
     <!-- Prayer Request Form (Hidden by Default) -->
-    <div id="prayerFormContainer" class="form-container" style="display: none;">
-        <h2>Submit a Prayer Request</h2>
-        <form action="/PrayerWall" method="POST" enctype="multipart/form-data" class="prayer-form">
-            <div class="form-group">
-                <label for="title" class="form-label">Title:</label>
-                <div class="input-box">
-                    <input type="text" id="title" name="title" required class="form-input" />
-                </div>
+    <div class="add-question">
+        <h1>Add Question:</h1>
+        <button class="btn add-button" id="add-short" onclick="shortQuestion()">Short</button>
+        <button class="btn add-button" id="add-long" onclick="longQuestion()">Long</button>
+        <button class="btn add-button" id="add-select" onclick="selectQuestion()">Select</button>
+        <!-- <button class="btn add-button" id="add-check">Check</button> -->
+    </div>
+
+    <div class="addQuestionForm"> 
+        <form id="short" style="display: none;" action="addQuestion" method="POST">
+            <input type="text" name="surveyId" value="<%= surveys[0].survey_id %>" hidden>
+            <input type="text" name="type" value="short" hidden>
+            <label for="text">Type 'short-answer' question here: </label><br>
+            <textarea name="text" id="text"></textarea><br>
+            <button class="btn">Add Question</button>
+        </form>
+        <form id="long" style="display: none;" action="addQuestion" method="POST">
+            <input type="text" name="surveyId" value="<%= surveys[0].survey_id %>" hidden>
+            <input type="text" name="type" value="long" hidden>
+            <label for="text">Type 'long-answer' question here: </label><br>
+            <textarea name="text" id="text"></textarea><br>
+            <button class="btn">Add Question</button>
+        </form>
+        <form id="select" style="display: none;" action="addQuestion" method="POST">
+            <input type="text" name="surveyId" value="<%= surveys[0].survey_id %>" hidden>
+            <input type="text" name="type" value="bubble" hidden>
+            <label for="text">Type 'select-answer' question here: </label><br>
+            <textarea name="text" id="text"></textarea><br>
+            <br>
+
+            <p>How many choices will there be?</p><br>
+            <select id="numberOfChoices" onchange="myFunction();" >
+                <!-- <option value="1">1</option> -->
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+            </select>
+
+            <br><br>
+
+            <div id="options">
+                <label for="option1">option1: </label>
+                <input name="option1" type="text"><br>
+                <label for="option2">option2: </label>
+                <input name="option2" type="text"><br>
             </div>
-        
-            <div class="form-group">
-                <label for="description" class="form-label">Description:</label>
-                <div class="input-box">
-                    <textarea id="description" name="description" rows="4" required class="form-input"></textarea>
-                </div>
-            </div>
-        
-            <div class="form-group">
-                <label for="image" class="form-label">Optional Image:</label>
-                <div class="input-box">
-                    <input type="file" id="image" name="image" accept="image/*" class="form-input" />
-                </div>
-            </div>
-        
-            <button type="submit" class="btn submit-btn">Submit Prayer Request</button>
+
+            <br><br>
+
+            <button class="btn">Add Question</button>
         </form>
     </div>
 
+    <div>
+        <!-- Checking if surveys and survey_questions have data to display -->
+        <% if (surveys && surveys.length > 0) { %>
+            <!-- Every question is generated here. There are 4 types -->
+            <% let array = []; let resetArray = false;%>
+            <% surveys.forEach((Q, index, arr) => { %>
+
+                <% if (index == 0) { %>
+                    <% // console.log(Q); %>
+                    <form action="surveyForm" method="POST">
+                    <input type="text" name="surveyId" value="<%= Q.survey_id %>" hidden>
+                    <h1><%= surveys[0].title %></h1>
+                    <div id="personsInfo">
+                        <label for="name">Name</label>
+                        <input id="name" name="name" type="text">
+                        <br>
+                        <label for="major">Major</label>
+                        <input id="major"  name="major" type="text">
+                        <br>
+                        <label for="year">Year</label>
+                        <input id="year" name="year" type="text">
+                    </div>
+                <% } %> 
+                
+                <% if (index < arr.length - 1 && arr[index+1].question_id == Q.question_id) {
+                    array.push(Q.choice);
+                    return;
+                } else if (index != 0 && arr[index-1].question_id == Q.question_id) {
+                    array.push(Q.choice);
+                    resetArray = true;
+                } %>
+                
+
+                <% if (Q.question_type == "short") { %>
+                    <div class="question">
+                        <img class="icon xmark" src="/Icons/svgs/solid/xmark.svg" onclick="deleteQuestion(`<%= Q.question_id %>`)">
+                        <h3><%= Q.question_text %></h3>
+                        <div class="input-box">
+                            <input id="<%= Q.question_id %>" name="<%= Q.question_id %>" type="text">
+                        </div>
+                    </div>
+                <% } else if (Q.question_type == "long") { %>
+                    <div class="question">
+                        <img class="icon xmark" src="/Icons/svgs/solid/xmark.svg" onclick="deleteQuestion(`<%= Q.question_id %>`)">
+                        <h3><%= Q.question_text %></h3>
+                        <div class="input-box">
+                            <textarea id="<%= Q.question_id %>" name="<%= Q.question_id %>" rows="3" class="form-input"></textarea>
+                        </div>
+                    </div>
+                <% } else if (Q.question_type == "bubble") { %>
+                    <div class="question">
+                        <img class="icon xmark" src="/Icons/svgs/solid/xmark.svg" onclick="deleteQuestion(`<%= Q.question_id %>`)">
+                        <h3><%= Q.question_text %></h3>
+                        <div class="input-box">
+                            <% array.forEach(c => { %>
+                            <input id="<%= c %>"  type="radio" name="<%= Q.question_id %>" value="<%= c %>"/>
+                            <label for="<%= c %>"><%= c %></label>
+                            <% }); %>
+                        </div>
+                    </div>
+                <% } else if (Q.question_type == "checkBox") { %>
+                    <div class="question">
+                        <img class="icon xmark" src="/Icons/svgs/solid/xmark.svg" onclick="deleteQuestion(`<%= Q.question_id %>`)">
+                        <h3><%= Q.question_text %></h3>
+                        <div class="input-box">
+                            <% array.forEach(c => { %>
+                            <input id="<%= c %>" name="<%= Q.question_id %>" type="checkbox">
+                            <label for="<%= c %>"><%= c %></label>
+                            <% }); %>
+                        </div>
+                    </div>
+                <% } %>
+
+                <% if (resetArray) { array = []; resetArray = false; } %>
+                <% if (index == arr.length - 1) { %>
+                    </form>
+                <% } %>
+                
+            <% }); %>
+        <% } %>
+
+        
+    </div>
+
+    <script>
+        let shortDiv = document.getElementById("short");
+        let longDiv = document.getElementById("long");
+        let selectDiv = document.getElementById("select");
+
+        function shortQuestion() {
+            shortDiv.style = "";
+            longDiv.style = "display: none;";
+            selectDiv.style = "display: none;";
+        }
+
+        function longQuestion() {
+            shortDiv.style = "display: none;";
+            longDiv.style = "";
+            selectDiv.style = "display: none;";
+        }
+
+        function selectQuestion() {
+            shortDiv.style = "display: none;";
+            longDiv.style = "display: none;";
+            selectDiv.style = "";
+        }
+
+        function myFunction() {
+            let optionBlock = document.getElementById("options");
+            optionBlock.innerHTML = "";
+            var ele = document.getElementById("numberOfChoices");
+            var selectedValue = ele.options[ele.selectedIndex].value;
+
+            let num = parseInt(selectedValue);
+
+            for (i = 1; i <= num; i++) {
+                optionBlock.innerHTML += `
+                    <label for="option${i}">option${i}: </label>
+                    <input name="option${i}" type="text"><br>
+                `;
+            }
+
+
+            // var y = document.getElementById("demo");
+            // if (selectedValue=="1"){
+            // num = parseInt(selectedValue);
+            // } else if(selectedValue=="2"){
+            // y.innerHTML = "hello 2";
+            // } else if(selectedValue=="3"){
+            // y.innerHTML = "hello 3";
+            // } else if(selectedValue=="4"){
+            // y.innerHTML = "hello 4";
+            // } else if(selectedValue=="5"){
+            // y.innerHTML = "hello 5";
+            // }
+        }
+    </script>
 </body>
 </html>

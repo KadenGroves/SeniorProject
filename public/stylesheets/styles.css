@@ -77,6 +77,16 @@ nav input {
   color: rgb(50, 50, 50);
   background-color: white;
   border: white;
+  font-weight: bolder;
+
+}
+#currentPageButton:hover {
+  /* padding-top: 28px; */
+  color: rgb(50, 50, 50);
+  background-color: white;
+  border: white;
+  opacity: 1;
+  font-size: 15px;
 }
 
 

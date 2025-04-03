@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    
+    <title>Survey</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <link rel="stylesheet" href="/stylesheets/survey.css">
+</head>
+<body>
+    <nav>
+        <div id="currentUser">
+            <% if (user && user.profile_picture != "") {%>
+                <img src="<%= user.profile_picture %>" alt="User Img">
+                <h3><%= user.username %></h3>
+            <% } else if (user) {%>
+                <img src="/uploads/default-profile.png" alt="User Img">
+                <h3><%= user.username %></h3>
+            <% } else { %>
+                <img src="/uploads/default-profile.png" alt="User Img">
+                <h3></h3>
+            <% } %>
+        </div>
+        
+        <div id="navButtons">
+            <a class="button" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
+            <a class="button" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg"> Profile</a>
+            <a class="button" id="currentPageButton" href="/survey"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey</a>
+            <a class="button" href="/prayerwall"><img class="icon" src="/Icons/svgs/solid/thumbtack.svg"> Prayer Wall</a>
+            <a class="button" href="/chat"><img class="icon" src="/Icons/svgs/solid/comment.svg"> Chat</a>
+            <a class="button" href="/calendar"><img class="icon" src="/Icons/svgs/solid/calendar.svg"> Calendar</a>
+            <% if (user && user.role === 'admin') { %>
+                <a class="button" href="/adminPanel">adminPanel</a>
+            <% } %>
+            <a class="button" href="/logout">Logout</a>
+            
+        </div>
+    </nav>
+    
+    <h1>SurveyCards</h1>
+    <p>Welcome to the Survey Cards page.</p>
+    
+    <div id="surveyCards">
+        <% if (cards && cards.length > 0) { %>
+            <% let qnaArray = []; %>
+
+            <% cards.forEach((c, index, arr) => { %>
+                <% if (index < arr.length-1) {
+                    if (arr[index].responder === arr[index + 1].responder) {
+                        qnaArray.push({key: c.question_text, value: c.answer_text});
+                    } else { %>
+                        <div class="surveyCard">
+                            <img class="moreCardInfoIcon" onclick="displayFullCard('<%= c.responder %>')" src="/Icons/svgs/solid/plus.svg">
+                            <h2><%= c.responder %> : <%= c.res_major %></h2>
+                            <p>Graduating in <%= c.res_year %> | Phone number: <%= c.res_phone %></p>
+                        </div>
+                        <div class="fullCard" id="<%= c.responder %>" style="display: none;">
+                            <img class="moreCardInfoIcon" onclick="closeFullCard('<%= c.responder %>')" src="/Icons/svgs/solid/xmark.svg">
+                            <h1><%= c.responder %> : <%= c.res_major %></h1>
+                            <p>Graduating in <%= c.res_year %> | Phone number: <%= c.res_phone %></p>
+                            <% qnaArray.forEach(qna => { %>
+                                <h2><%= qna.key %></h2>
+                                <p><%= qna.value %></p>
+                            <% }); %>
+                        </div>
+
+                        <% qnaArray = []; %>
+                    <% } %>
+                <% } else { %>
+                    <div class="surveyCard">
+                        <img class="moreCardInfoIcon" onclick="displayFullCard('<%= c.responder %>')" src="/Icons/svgs/solid/plus.svg">
+                        <h2><%= c.responder %> : <%= c.res_major %></h2>
+                        <p>Graduating in <%= c.res_year %> | Phone number: <%= c.res_phone %></p>
+                    </div>
+                    <div class="fullCard" id="<%= c.responder %>" style="display: none;">
+                        <img class="moreCardInfoIcon" onclick="closeFullCard('<%= c.responder %>')" src="/Icons/svgs/solid/xmark.svg">
+                        <h1><%= c.responder %> : <%= c.res_major %></h1>
+                        <p>Graduating in <%= c.res_year %> | Phone number: <%= c.res_phone %></p>
+                        <% qnaArray.forEach(qna => { %>
+                            <h2><%= qna.key %></h2>
+                            <p><%= qna.value %></p>
+                        <% }); %>
+                    </div>
+                <% } %>
+            <% }); %>
+        <% } %>
+
+    </div>
+    <script>
+        function displayFullCard(cardName) {
+            const fullCard = document.getElementById(cardName);
+            fullCard.style = "";
+        }
+
+        function closeFullCard(cardName) {
+            const fullCard = document.getElementById(cardName);
+            fullCard.style = "display: none;";
+        }
+    </script>
+    <br>
+</body>
+</html>
