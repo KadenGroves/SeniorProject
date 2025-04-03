@@ -50,6 +50,7 @@ const prayerWallRoutes = require('./prayerWall');
 const profileRoutes = require('./profile');
 const surveyRoutes = require('./survey');
 const surveyCreateRoutes = require('./surveyCreate');
+const adminPanelRoutes = require("./adminPanel");
 
 app.use(bibleRoutes);
 app.use(loginRoutes);
@@ -58,6 +59,7 @@ app.use(chatRoutes);
 app.use(prayerWallRoutes);
 app.use(profileRoutes);
 app.use(surveyRoutes);
+app.use(adminPanelRoutes);
 
 // Serve HTML files explicitly (improving clarity)
 // Corrected explicit HTML routes:
@@ -72,6 +74,8 @@ app.get('/survey', (req, res) => res.sendFile(path.join(__dirname, '../views/sur
 app.get('/surveyCreate', (req, res) => res.sendFile(path.join(__dirname, '../views/surveyCreate.html')));
 app.get('/landing', (req, res) => res.sendFile(path.join(__dirname, '../views/landing.html')));
 app.get('/adminPanel', (req, res) => res.sendFile(path.join(__dirname, '../views/adminPanel.html')));
+
+
 
 
 // API endpoint for current user (testing purposes)

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+</head>
+<body>
+    <nav>
+        <div id="currentUser">
+            <img id="userImg" src="/uploads/default-profile.png" alt="User Img">
+            <h3 id="username">Guest</h3>
+        </div>
+        <div id="navButtons">
+            <a class="button" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
+            <a class="button" id="currentPageButton" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg"> Profile</a>
+            <a class="button" href="/survey"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey</a>
+            <a class="button" href="/prayerwall"><img class="icon" src="/Icons/svgs/solid/thumbtack.svg"> Prayer Wall</a>
+            <a class="button" href="/chat"><img class="icon" src="/Icons/svgs/solid/comment.svg"> Chat</a>
+            <a class="button" href="/calendar"><img class="icon" src="/Icons/svgs/solid/calendar.svg"> Calendar</a>
+            <a class="button" id="adminLink" href="/adminPanel" style="display:none;">Admin Panel</a>
+            <a class="button" href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <main>
+        <h1>Your Profile</h1>
+        <div class="profile-page-wrapper">
+            <div class="profile-container">
+                <table>
+                    <tr><th>Username</th><td id="profileUsername">Loading...</td></tr>
+                    <tr><th>Email:</th><td id="profileEmail">Loading...</td></tr>
+                    <tr><th>You Joined Ministry Meetup:</th><td id="profileJoinDate">Loading...</td></tr>
+                </table>
+
+                <form action="/changePassword" method="POST" class="change-password-form">
+                    <h3>Change Password</h3>
+                    <div class="form-group">
+                        <label for="oldPassword">Old Password:</label>
+                        <input type="password" id="oldPassword" name="oldPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password:</label>
+                        <input type="password" id="newPassword" name="newPassword" required>
+                    </div>
+                    <button type="submit" class="btn">Change Password</button>
+                </form>
+
+                <form action="/uploadProfileImage" method="POST" enctype="multipart/form-data" class="form-group">
+                    <h3>Change Profile Image</h3>
+                    <div class="form-group">
+                        <label for="image" class="form-label">Profile Picture:</label>
+                        <input type="file" id="image" name="image" accept="image/*" class="form-input" />
+                    </div>
+                    <button type="submit" class="btn">Change Profile Picture</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+      fetch('/api/user')
+        .then(res => res.json())
+        .then(user => {
+          if (user?.username) {
+            document.getElementById('userImg').src = user.profile_picture || '/uploads/default-profile.png';
+            document.getElementById('username').textContent = user.username;
+            document.getElementById('profileUsername').textContent = user.username;
+            document.getElementById('profileEmail').textContent = maskEmail(user.email);
+            document.getElementById('profileJoinDate').textContent = new Date(user.created_at).toLocaleString();
+            if (user.role === 'admin') {
+              document.getElementById('adminLink').style.display = 'inline-block';
+            }
+          }
+        });
+
+      function maskEmail(email) {
+        const atIndex = email.indexOf('@');
+        return email[0] + '*****' + email.slice(atIndex);
+      }
+    </script>
+</body>
+</html>

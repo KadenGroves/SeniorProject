@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <title>Prayer Wall</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css" />
+  <link rel="stylesheet" href="/stylesheets/prayerwall.css" />
+</head>
+<body>
+  <nav>
+    <div id="currentUser">
+      <img id="userImg" src="/uploads/default-profile.png" alt="User Img">
+      <h3 id="usernameDisplay">Guest</h3>
+    </div>
+    <div id="navButtons">
+      <a class="button" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
+      <a class="button" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg"> Profile</a>
+      <a class="button" href="/survey"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey</a>
+      <a class="button" id="currentPageButton" href="/prayerwall"><img class="icon" src="/Icons/svgs/solid/thumbtack.svg"> Prayer Wall</a>
+      <a class="button" href="/chat"><img class="icon" src="/Icons/svgs/solid/comment.svg"> Chat</a>
+      <a class="button" href="/calendar"><img class="icon" src="/Icons/svgs/solid/calendar.svg"> Calendar</a>
+      <a id="adminPanelBtn" class="button" href="/adminPanel" style="display: none;">Admin Panel</a>
+      <a class="button" href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <main class="prayer-container">
+    <h1>Prayer Wall</h1>
+    <p>Welcome to the Prayer Wall page.</p>
+
+    <button id="togglePrayerForm" style="background-color: #2d572c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">
+      Pin A Prayer
+    </button>
+
+    <div id="prayerFormContainer" class="form-container" style="display: none; background-color: #f8f8f8; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <h2>Submit a Prayer Request</h2>
+      <form action="/PrayerWall" method="POST" enctype="multipart/form-data" class="prayer-form">
+        <div class="form-group">
+          <label for="title" class="form-label">Title:</label>
+          <div class="input-box">
+            <input type="text" id="title" name="title" required class="form-input" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description" class="form-label">Description:</label>
+          <div class="input-box">
+            <textarea id="description" name="description" rows="4" required class="form-input"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="image" class="form-label">Optional Image:</label>
+          <div class="input-box">
+            <input type="file" id="image" name="image" accept="image/*" class="form-input" />
+          </div>
+        </div>
+        <button type="submit" class="btn submit-btn" style="background-color: #2d572c; color: white;">
+          Submit Prayer Request
+        </button>
+      </form>
+    </div>
+
+    <h2>Prayer Requests</h2>
+    <div id="prayerList">
+      <p>Loading prayer requests...</p>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("togglePrayerForm").addEventListener("click", () => {
+      const formContainer = document.getElementById("prayerFormContainer");
+      const button = document.getElementById("togglePrayerForm");
+      if (formContainer.style.display === "none" || formContainer.style.display === "") {
+        formContainer.style.display = "block";
+        button.innerText = "Close Pin A Prayer";
+      } else {
+        formContainer.style.display = "none";
+        button.innerText = "Pin A Prayer";
+      }
+    });
+
+    async function fetchUser() {
+      const res = await fetch('/api/user');
+      const user = await res.json();
+      if (user) {
+        document.getElementById('usernameDisplay').textContent = user.username;
+        document.getElementById('userImg').src = user.profile_picture || '/uploads/default-profile.png';
+        if (user.role === 'admin') {
+          document.getElementById('adminPanelBtn').style.display = 'inline-block';
+        }
+      }
+    }
+
+    async function fetchPrayers() {
+      try {
+        const res = await fetch('/api/prayers');
+        const prayers = await res.json();
+        const container = document.getElementById('prayerList');
+        container.innerHTML = "";
+
+        if (prayers.length === 0) {
+          container.innerHTML = "<p>No prayer requests have been posted yet. Be the first to share one!</p>";
+          return;
+        }
+
+        prayers.forEach(prayer => {
+          const div = document.createElement('div');
+          div.classList.add('prayer-item');
+          div.innerHTML = `
+            <h3>${prayer.title}</h3>
+            <p>${prayer.description}</p>
+            <p><small>Posted by: ${prayer.username} on ${new Date(prayer.created_at).toLocaleString()}</small></p>
+            ${prayer.image_url ? `<img src="${prayer.image_url}" alt="Prayer Image" style="max-width: 300px;" />` : ""}
+            <hr />
+          `;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        document.getElementById('prayerList').innerHTML = "<p>Failed to load prayers.</p>";
+        console.error(err);
+      }
+    }
+
+    fetchUser();
+    fetchPrayers();
+  </script>
+</body>
+</html>

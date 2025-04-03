@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - User List</title>
+  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <link rel="stylesheet" href="/stylesheets/adminPanel.css">
+</head>
+<body>
+  <nav>
+    <div id="currentUser">
+      <img id="userImage" src="/uploads/default-profile.png" alt="User Img">
+      <h3 id="username">Guest</h3>
+    </div>
+    <div id="navButtons">
+      <a class="button" href="/"><img class="icon" src="/Icons/svgs/solid/house.svg"> Home</a>
+      <a class="button" href="/profile"><img class="icon" src="/Icons/svgs/solid/user.svg"> Profile</a>
+      <a class="button" href="/survey"><img class="icon" src="/Icons/svgs/solid/clipboard.svg"> Survey</a>
+      <a class="button" href="/prayerwall"><img class="icon" src="/Icons/svgs/solid/thumbtack.svg"> Prayer Wall</a>
+      <a class="button" href="/chat"><img class="icon" src="/Icons/svgs/solid/comment.svg"> Chat</a>
+      <a class="button" href="/calendar"><img class="icon" src="/Icons/svgs/solid/calendar.svg"> Calendar</a>
+      <a class="button" id="adminLink" href="/adminPanel" style="display:none;">Admin Panel</a>
+      <a class="button" href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <main style="padding: 20px;">
+    <h2>Search User</h2>
+    <form id="searchForm">
+      <input type="text" id="searchUsername" placeholder="Enter username" required>
+      <button type="submit">Search</button>
+    </form>
+
+    <div id="searchResult"></div>
+
+    <h1>Admin Panel - User List</h1>
+    <div id="userTable"></div>
+  </main>
+
+  <script>
+    async function loadUserData() {
+      const res = await fetch('/api/user');
+      const user = await res.json();
+      if (user && user.username) {
+        document.getElementById('username').innerText = user.username;
+        document.getElementById('userImage').src = user.profile_picture || '/uploads/default-profile.png';
+        if (user.role === 'admin') {
+          document.getElementById('adminLink').style.display = 'inline-block';
+        }
+      }
+    }
+
+    async function loadUsers() {
+      const res = await fetch('/api/admin/users');
+      const users = await res.json();
+      displayUserTable(users);
+    }
+
+    async function searchUser(username) {
+      const res = await fetch(`/api/admin/search?username=${encodeURIComponent(username)}`);
+      const data = await res.json();
+      const container = document.getElementById('searchResult');
+      container.innerHTML = data.user ? renderUserTable([data.user], true) : '<p>No user found with that username.</p>';
+    }
+
+    function displayUserTable(users) {
+      const tableHtml = renderUserTable(users, false);
+      document.getElementById('userTable').innerHTML = tableHtml;
+    }
+
+    function renderUserTable(users, isSearch) {
+      return `
+        <table border="1">
+          <thead>
+            <tr>
+              <th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Created At</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${users.map(user => `
+              <tr>
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.email}</td>
+                <td>${user.role}</td>
+                <td>${user.created_at}</td>
+                <td>
+                  ${user.actionButtons || ''}
+                </td>
+              </tr>`).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    document.getElementById('searchForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const username = document.getElementById('searchUsername').value;
+      if (username) searchUser(username);
+    });
+
+    loadUserData();
+    loadUsers();
+  </script>
+</body>
+</html>

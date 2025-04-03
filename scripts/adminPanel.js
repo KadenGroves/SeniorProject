@@ -1,160 +1,168 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
+const path = require('path');
 
 function isAdmin(req, res, next) {
-    if (req.session.user && req.session.user.role === 'admin') {
-        next();  // User is admin, proceed
-    } else {
-        res.status(403).send('Access denied. Admins only.');
-    }
+  if (req.session.user && req.session.user.role === 'admin') {
+    next();
+  } else {
+    res.status(403).send('Access denied. Admins only.');
+  }
 }
 
 function isStaff(req, res, next) {
-    if (req.session.user && (req.session.user.role === 'admin' || req.session.user.role === 'staff')) {
-        next();
-    } else {
-        res.status(403).send('Access denied. Staff only.');
-    }
+  if (req.session.user && (req.session.user.role === 'admin' || req.session.user.role === 'staff')) {
+    next();
+  } else {
+    res.status(403).send('Access denied. Staff only.');
+  }
 }
 
-router.get('/adminPanel', isAdmin, isStaff, (req, res) => {
-    if (req.session.user == null) {
-        res.redirect('/login')
-        return;
-    }
-
-    const query = 'SELECT id, username, email, role, created_at FROM users';
-
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Error fetching users:', err);
-            return res.status(500).send('Error fetching users');
-        }
-
-        res.render('adminPanel.ejs', {
-            users: results,
-            currentUser: req.session.user,
-            searchUser: null,   
-            searchPerformed: false  
-        });
-    });
+router.get('/adminPanel', isStaff, (req, res) => {
+  if (!req.session.user) return res.redirect('/login');
+  res.sendFile(path.join(__dirname, '../views/adminPanel.html'));
 });
+
+router.get('/api/admin/users', isStaff, (req, res) => {
+  const query = 'SELECT id, username, email, role, created_at FROM users';
+  db.query(query, (err, users) => {
+    if (err) return res.status(500).send('Error fetching users');
+
+    users = users.map(user => {
+      user.actionButtons = renderActions(req.session.user, user);
+      return user;
+    });
+
+    res.json(users);
+  });
+});
+
+router.get('/api/admin/search', isStaff, (req, res) => {
+  const username = req.query.username;
+  if (!username) return res.status(400).send('Username required');
+
+  const searchQuery = 'SELECT id, username, email, role, created_at FROM users WHERE username = ?';
+
+  db.query(searchQuery, [username], (err, results) => {
+    if (err) return res.status(500).send('Error searching user');
+    const user = results[0];
+    if (user) user.actionButtons = renderActions(req.session.user, user);
+    res.json({ user });
+  });
+});
+
+function renderActions(currentUser, user) {
+  if (user.id === currentUser.id && user.role === 'admin') return '';
+  let buttons = '';
+  const form = (path, label, confirm = false) => `
+    <form action="/adminPanel/${path}/${user.id}" method="POST" style="display:inline;">
+      <button type="submit"${confirm ? " onclick=\"return confirm('Are you sure?')\"" : ''}>${label}</button>
+    </form>`;
+
+  if (currentUser.role === 'admin') {
+    if (user.role === 'user') {
+      buttons += form('promote', 'Promote to Student Leader');
+    } else if (user.role === 'studentleader') {
+      buttons += form('promote', 'Promote to Staff');
+      buttons += form('demote', 'Demote to User');
+    } else if (user.role === 'staff') {
+      buttons += form('demote', 'Demote to Student Leader');
+    }
+    if (user.role !== 'admin') {
+      buttons += form('delete', 'Delete', true);
+    }
+  } else if (currentUser.role === 'staff') {
+    if (user.role === 'user') {
+      buttons += form('promote', 'Promote to Student Leader');
+      buttons += form('delete', 'Delete', true);
+    } else if (user.role === 'studentleader') {
+      buttons += form('demote', 'Demote to User');
+      buttons += form('delete', 'Delete', true);
+    }
+  }
+
+  return buttons;
+}
 
 router.post('/adminPanel/promote/:id', isStaff, (req, res) => {
-    const userId = req.params.id;
-    
-    const getUserQuery = 'SELECT role FROM users WHERE id = ?';
-    db.query(getUserQuery, [userId], (err, results) => {
-        if (err || results.length === 0) {
-            return res.status(500).send('Error finding user.');
-        }
+  const userId = req.params.id;
+  const currentUser = req.session.user;
 
-        let currentRole = results[0].role;
-        let newRole = '';
+  db.query('SELECT role FROM users WHERE id = ?', [userId], (err, results) => {
+    if (err || results.length === 0) return res.status(500).send('Error finding user.');
 
-        if (currentRole === 'user') {
-            newRole = 'studentleader';
-        } else if (currentRole === 'studentleader') {
-            newRole = 'staff';
-        } else if (currentRole === 'staff') {
-            if (req.session.user.role === 'admin') {
-                newRole = 'admin';
-            } else {
-                return res.status(403).send('Only admins can promote staff to admin.');
-            }
-        } else if (currentRole === 'admin') {
-            newRole = 'staff';
-        } else {
-            return res.status(400).send('Invalid role transition.');
-        }
+    const currentRole = results[0].role;
+    let newRole = '';
 
-        const updateQuery = 'UPDATE users SET role = ? WHERE id = ?';
-        db.query(updateQuery, [newRole, userId], (err) => {
-            if (err) {
-                return res.status(500).send('Error updating user role.');
-            }
-            res.redirect('/adminPanel');
-        });
+    if (currentRole === 'user') {
+      newRole = 'studentleader';
+    } else if (currentRole === 'studentleader') {
+      if (currentUser.role === 'admin') {
+        newRole = 'staff';
+      } else {
+        return res.status(403).send('Only admins can promote to staff.');
+      }
+    } else if (currentRole === 'staff') {
+      if (currentUser.role === 'admin') {
+        newRole = 'admin';
+      } else {
+        return res.status(403).send('Only admins can promote to admin.');
+      }
+    } else {
+      return res.status(400).send('Invalid promotion.');
+    }
+
+    db.query('UPDATE users SET role = ? WHERE id = ?', [newRole, userId], err => {
+      if (err) return res.status(500).send('Error updating user role.');
+      res.redirect('/adminPanel');
     });
+  });
 });
 
-// Demote User (Staff can demote up to staff)
 router.post('/adminPanel/demote/:id', isStaff, (req, res) => {
-    const userId = req.params.id;
+  const userId = req.params.id;
+  const currentUser = req.session.user;
 
-    const getUserQuery = 'SELECT role FROM users WHERE id = ?';
-    db.query(getUserQuery, [userId], (err, results) => {
-        if (err || results.length === 0) {
-            return res.status(500).send('Error finding user.');
-        }
+  db.query('SELECT role FROM users WHERE id = ?', [userId], (err, results) => {
+    if (err || results.length === 0) return res.status(500).send('Error finding user.');
 
-        let currentRole = results[0].role;
-        let newRole = '';
+    const currentRole = results[0].role;
+    let newRole = '';
 
-        if (currentRole === 'staff') {
-            newRole = 'studentleader';
-        } else if (currentRole === 'studentleader') {
-            newRole = 'user';
-        } else {
-            return res.status(400).send('Cannot demote this user.');
-        }
+    if (currentRole === 'staff') {
+      if (currentUser.role !== 'admin') return res.status(403).send('Only admins can demote staff.');
+      newRole = 'studentleader';
+    } else if (currentRole === 'studentleader') {
+      newRole = 'user';
+    } else {
+      return res.status(400).send('Cannot demote this user.');
+    }
 
-        const updateQuery = 'UPDATE users SET role = ? WHERE id = ?';
-        db.query(updateQuery, [newRole, userId], (err) => {
-            if (err) {
-                return res.status(500).send('Error updating user role.');
-            }
-            res.redirect('/adminPanel');
-        });
+    db.query('UPDATE users SET role = ? WHERE id = ?', [newRole, userId], err => {
+      if (err) return res.status(500).send('Error updating user role.');
+      res.redirect('/adminPanel');
     });
+  });
 });
 
-// Delete User (Admins and Staff can delete users, but Admins cannot delete themselves)
 router.post('/adminPanel/delete/:id', isStaff, (req, res) => {
-    const userId = req.params.id;
+  const userId = req.params.id;
+  const currentUser = req.session.user;
 
-    const getUserQuery = 'SELECT role FROM users WHERE id = ?';
-    db.query(getUserQuery, [userId], (err, results) => {
-        if (err || results.length === 0) {
-            return res.status(500).send('Error finding user.');
-        }
+  db.query('SELECT role FROM users WHERE id = ?', [userId], (err, results) => {
+    if (err || results.length === 0) return res.status(500).send('Error finding user.');
 
-        if (results[0].role === 'admin') {
-            return res.status(403).send('Admins cannot delete themselves.');
-        }
+    const targetRole = results[0].role;
 
-        const deleteQuery = 'DELETE FROM users WHERE id = ?';
-        db.query(deleteQuery, [userId], (err) => {
-            if (err) {
-                return res.status(500).send('Error deleting user.');
-            }
-            res.redirect('/adminPanel');
-        });
+    if (targetRole === 'admin') return res.status(403).send('Admins cannot delete other admins.');
+    if (targetRole === 'staff' && currentUser.role !== 'admin') return res.status(403).send('Only admins can delete staff.');
+
+    db.query('DELETE FROM users WHERE id = ?', [userId], err => {
+      if (err) return res.status(500).send('Error deleting user.');
+      res.redirect('/adminPanel');
     });
-});
-
-//User search
-router.get('/adminPanel/search', isStaff, (req, res) => {
-    const username = req.query.username;
-    if (!username) return res.redirect('/adminPanel');
-
-    const searchQuery = 'SELECT id, username, email, role, created_at FROM users WHERE username = ?';
-    const allUsersQuery = 'SELECT id, username, email, role, created_at FROM users';
-
-    db.query(searchQuery, [username], (err, searchResults) => {
-        if (err) return res.status(500).send('Error searching user.');
-            db.query(allUsersQuery, (err, allUsers) => {
-            if (err) return res.status(500).send('Error fetching users.');
-
-            res.render('adminPanel.ejs', {
-                users: allUsers,                    
-                currentUser: req.session.user,
-                searchUser: searchResults[0] || null,
-                searchPerformed: true
-            });
-        });
-    });
+  });
 });
 
 module.exports = router;
