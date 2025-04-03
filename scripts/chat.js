@@ -1,8 +1,8 @@
 const express = require('express');
-const mysql = require('mysql2');
-const path = require('path');
 const router = express.Router();
 const db = require('./db');
+const fs = require('fs');
+
 
 router.get('/chat', (req, res) => {
   if (req.session.user == null) {
@@ -95,10 +95,12 @@ router.post('/postMessage/:name', (req, res) => {
         console.error('Error posting new message', err);
         return res.status(408).send('Error posting new message');
       }
-      res.redirect('/chat');
+      console.log(`"${message}" successfully recorded in database`);
+
+      
+      res.redirect("/chat/:thread");
     })
-  })
-  
+  }) 
 })
 
 router.get('/chat/:thread', (req, res) => {

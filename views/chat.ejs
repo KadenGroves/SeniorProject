@@ -96,14 +96,19 @@
                 </form>
             </div>
 
+            <div id="threadMessages">
             <% if (messages) { %>
                 <% messages.forEach(message => { %>
                     <p><%= message.sender_id %>: <%= message.message %></p>
                 <% }) %>
+                <div id="newMessages">
+                    
+                </div>
+            </div>
 
                 <form action="/postMessage/<%= threadName %>" method="POST">
-                    <input type="text" name="message" placeholder="Message" style="display: inline;" required>
-                    <button type="submit" style="display: inline;">Post</button>
+                    <input type="text" name="message" id="message" placeholder="Message" style="display: inline;" required>
+                    <button type="submit" id="messageSubmit" style="display: inline;">Post</button>
                 </form>
             <% } %>
 
