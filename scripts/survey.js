@@ -5,8 +5,10 @@ const fs = require('fs');
 const router = express.Router();
 const db = require('./db');
 const { log } = require('console');
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
+
+
+// const jsdom = require("jsdom");
+// const { JSDOM } = jsdom;
 
 let SURVEYID;
 
@@ -41,7 +43,7 @@ router.get('/survey', (req, res) => {
         console.error("Failed to retrieve data:", err);
         return res.status(500).json({ error: "Failed to retrieve data" });
         }
-        res.render('survey', { surveys : results });
+        res.sendFile(path.join(__dirname, '../views/survey.html'));
     });
 });
 
