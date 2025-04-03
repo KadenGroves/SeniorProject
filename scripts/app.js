@@ -49,7 +49,6 @@ const chatRoutes = require('./chat');
 const prayerWallRoutes = require('./prayerWall');
 const profileRoutes = require('./profile');
 const surveyRoutes = require('./survey');
-const surveyCreateRoutes = require('./surveyCreate');
 const adminPanelRoutes = require("./adminPanel");
 
 app.use(bibleRoutes);
@@ -72,6 +71,7 @@ app.get('/orgFinder', (req, res) => res.sendFile(path.join(__dirname, '../views/
 app.get('/prayerWall', (req, res) => res.sendFile(path.join(__dirname, '../views/prayerwall.html')));
 app.get('/survey', (req, res) => res.sendFile(path.join(__dirname, '../views/survey.html')));
 app.get('/surveyCreate', (req, res) => res.sendFile(path.join(__dirname, '../views/surveyCreate.html')));
+app.get('/surveyCards', (req, res) => res.sendFile(path.join(__dirname, '../views/surveyCards.html')));
 app.get('/landing', (req, res) => res.sendFile(path.join(__dirname, '../views/landing.html')));
 app.get('/adminPanel', (req, res) => res.sendFile(path.join(__dirname, '../views/adminPanel.html')));
 

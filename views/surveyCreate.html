@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    
+    <title>Survey</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <link rel="stylesheet" href="/stylesheets/survey.css">
+</head>
+<body>
+    <nav>
+        <div id="currentUser">
+            
+        </div>
+    </nav>
+    
+    <h1>Create a Survey</h1>
+    <!-- <button
+        id="togglePrayerForm"
+        style="background-color: #2d572c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;"
+        >
+        Pin A Prayer
+    </button> -->
+
+    <!-- Prayer Request Form (Hidden by Default) -->
+    <div class="add-question">
+        <h1>Add Question:</h1>
+        <button class="btn add-button" id="add-short" onclick="shortQuestion()">Short</button>
+        <button class="btn add-button" id="add-long" onclick="longQuestion()">Long</button>
+        <button class="btn add-button" id="add-select" onclick="selectQuestion()">Select</button>
+        <!-- <button class="btn add-button" id="add-check">Check</button> -->
+    </div>
+
+    <div class="addQuestionForm"> 
+        <form id="short" style="display: none;" action="addQuestion" method="POST">
+            <input type="text" name="surveyId" value="<%= surveys[0].survey_id %>" hidden>
+            <input type="text" name="type" value="short" hidden>
+            <label for="text">Type 'short-answer' question here: </label><br>
+            <textarea name="text" id="text"></textarea><br>
+            <button class="btn">Add Question</button>
+        </form>
+        <form id="long" style="display: none;" action="addQuestion" method="POST">
+            <input type="text" name="surveyId" value="<%= surveys[0].survey_id %>" hidden>
+            <input type="text" name="type" value="long" hidden>
+            <label for="text">Type 'long-answer' question here: </label><br>
+            <textarea name="text" id="text"></textarea><br>
+            <button class="btn">Add Question</button>
+        </form>
+        <form id="select" style="display: none;" action="addQuestion" method="POST">
+            <input type="text" name="surveyId" value="<%= surveys[0].survey_id %>" hidden>
+            <input type="text" name="type" value="bubble" hidden>
+            <label for="text">Type 'select-answer' question here: </label><br>
+            <textarea name="text" id="text"></textarea><br>
+            <br>
+
+            <p>How many choices will there be?</p><br>
+            <select id="numberOfChoices" onchange="myFunction();" >
+                <!-- <option value="1">1</option> -->
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+            </select>
+
+            <br><br>
+
+            <div id="options">
+                <label for="option1">option1: </label>
+                <input name="option1" type="text"><br>
+                <label for="option2">option2: </label>
+                <input name="option2" type="text"><br>
+            </div>
+
+            <br><br>
+
+            <button class="btn">Add Question</button>
+        </form>
+    </div>
+
+    <div>
+        <!-- Checking if surveys and survey_questions have data to display -->
+        
+
+        
+    </div>
+
+    
+</body>
+</html>
